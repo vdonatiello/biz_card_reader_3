@@ -2,33 +2,201 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Business Card Upload</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Card Scanner</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+    
+    .container {
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    
+    .instructions {
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      opacity: 0.9;
+      line-height: 1.4;
+    }
+    
+    .camera-button-container {
+      position: relative;
+      margin-bottom: 30px;
+    }
+    
+    .camera-button {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+      border: 6px solid white;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 3rem;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .camera-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    }
+    
+    .camera-button:active {
+      transform: scale(0.95);
+    }
+    
+    .camera-icon {
+      font-size: 4rem;
+      margin-bottom: 5px;
+    }
+    
+    .camera-text {
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .file-input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    .result {
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      text-align: left;
+      font-family: monospace;
+      font-size: 0.9rem;
+      max-height: 300px;
+      overflow-y: auto;
+      display: none;
+    }
+    
+    .loading {
+      display: none;
+      margin-top: 20px;
+      font-size: 1.1rem;
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  </style>
 </head>
 <body>
-  <h2>Upload Business Card</h2>
-  <form id="uploadForm">
-    <input type="file" id="imageInput" accept="image/*" capture="camera" required />
-    <button type="submit">Submit</button>
-  </form>
-  <pre id="result"></pre>
+  <div class="container">
+    <h1>📋 Business Card Scanner</h1>
+    <p class="instructions">
+      Tap the camera button below to scan your business card and automatically extract contact information
+    </p>
+    
+    <form id="uploadForm">
+      <div class="camera-button-container">
+        <div class="camera-button pulse" id="cameraButton">
+          <div class="camera-icon">📷</div>
+          <div class="camera-text">Take Photo</div>
+          <input 
+            type="file" 
+            id="imageInput" 
+            class="file-input"
+            accept="image/*" 
+            capture="camera" 
+            required 
+            autofocus
+          />
+        </div>
+      </div>
+    </form>
+    
+    <div class="loading" id="loading">
+      🔄 Processing your business card...
+    </div>
+    
+    <pre class="result" id="result"></pre>
+  </div>
+
   <script>
-    const form = document.getElementById('uploadForm');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const file = document.getElementById('imageInput').files[0];
-      if (!file) return alert("Please select an image.");
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64 = reader.result.split(',')[1];
-        const res = await fetch('/api/upload', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ image: base64 })
-        });
-        const json = await res.json();
-        document.getElementById('result').textContent = JSON.stringify(json, null, 2);
-      };
-      reader.readAsDataURL(file);
+    // Auto-focus the file input on page load
+    window.addEventListener('load', () => {
+      document.getElementById('imageInput').focus();
+    });
+
+    // Handle file selection
+    document.getElementById('imageInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      // Show loading state
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('result').style.display = 'none';
+      document.querySelector('.camera-button').classList.remove('pulse');
+      
+      try {
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const base64 = reader.result.split(',')[1];
+          
+          const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: base64 })
+          });
+          
+          const result = await response.json();
+          
+          // Hide loading and show results
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('result').style.display = 'block';
+          document.getElementById('result').textContent = JSON.stringify(result, null, 2);
+          
+          // Reset button animation
+          document.querySelector('.camera-button').classList.add('pulse');
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('result').textContent = 'Error: ' + error.message;
+      }
     });
   </script>
 </body>
