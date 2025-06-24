@@ -1,203 +1,418 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Business Card Scanner</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: white;
-    }
-    
-    .container {
-      text-align: center;
-      max-width: 400px;
-      width: 100%;
-    }
-    
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-    
-    .instructions {
-      font-size: 1.2rem;
-      margin-bottom: 40px;
-      opacity: 0.9;
-      line-height: 1.4;
-    }
-    
-    .camera-button-container {
-      position: relative;
-      margin-bottom: 30px;
-    }
-    
-    .camera-button {
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
-      border: 6px solid white;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-size: 3rem;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin: 0 auto;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .camera-button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-    }
-    
-    .camera-button:active {
-      transform: scale(0.95);
-    }
-    
-    .camera-icon {
-      font-size: 4rem;
-      margin-bottom: 5px;
-    }
-    
-    .camera-text {
-      font-size: 0.9rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    
-    .file-input {
-      position: absolute;
-      opacity: 0;
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-    }
-    
-    .result {
-      background: rgba(255,255,255,0.1);
-      border-radius: 10px;
-      padding: 20px;
-      margin-top: 20px;
-      text-align: left;
-      font-family: monospace;
-      font-size: 0.9rem;
-      max-height: 300px;
-      overflow-y: auto;
-      display: none;
-    }
-    
-    .loading {
-      display: none;
-      margin-top: 20px;
-      font-size: 1.1rem;
-    }
-    
-    .pulse {
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Card Scanner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            line-height: 1.4;
+        }
+
+        .upload-section {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .camera-button {
+            display: inline-block;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(145deg, #4CAF50, #45a049);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .camera-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(76, 175, 80, 0.4);
+        }
+
+        .camera-button:active {
+            transform: translateY(0);
+        }
+
+        .camera-icon {
+            font-size: 4rem;
+            color: white;
+            line-height: 200px;
+        }
+
+        .file-input {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            opacity: 0;
+            cursor: pointer;
+            border-radius: 50%;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .instruction-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .sub-instruction {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .result-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .result-label {
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .result-value {
+            font-weight: 400;
+            word-break: break-word;
+            max-width: 60%;
+            text-align: right;
+        }
+
+        .error-message {
+            display: none;
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid rgba(244, 67, 54, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #ffcdd2;
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #c8e6c9;
+        }
+
+        .reset-button {
+            background: linear-gradient(145deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        /* iPhone-specific optimizations */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .camera-button {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .camera-icon {
+                font-size: 3.5rem;
+                line-height: 180px;
+            }
+            
+            .file-input {
+                width: 180px;
+                height: 180px;
+            }
+        }
+
+        /* Animation for success state */
+        .success-animation {
+            animation: successPulse 0.6s ease-in-out;
+        }
+
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>📋 Business Card Scanner</h1>
-    <p class="instructions">
-      Tap the camera button below to scan your business card and automatically extract contact information
-    </p>
-    
-    <form id="uploadForm">
-      <div class="camera-button-container">
-        <div class="camera-button pulse" id="cameraButton">
-          <div class="camera-icon">📷</div>
-          <div class="camera-text">Take Photo</div>
-          <input 
-            type="file" 
-            id="imageInput" 
-            class="file-input"
-            accept="image/*" 
-            capture="camera" 
-            required 
-            autofocus
-          />
+    <div class="container">
+        <div class="logo">📱</div>
+        <h1>Business Card Scanner</h1>
+        <p class="subtitle">Capture business cards instantly and save to Google Sheets automatically</p>
+        
+        <div class="upload-section" id="uploadSection">
+            <div class="camera-button" id="cameraButton">
+                <span class="camera-icon">📷</span>
+                <input type="file" class="file-input" id="fileInput" accept="image/*" capture="camera">
+            </div>
+            <div class="instruction-text">Tap to scan business card</div>
+            <div class="sub-instruction">Camera will open automatically</div>
         </div>
-      </div>
-    </form>
-    
-    <div class="loading" id="loading">
-      🔄 Processing your business card...
+
+        <div class="loading" id="loadingSection">
+            <div class="spinner"></div>
+            <div>Processing your business card...</div>
+            <div style="font-size: 0.9rem; opacity: 0.8;">This may take a few seconds</div>
+        </div>
+
+        <div class="result-section" id="resultSection">
+            <div class="result-title">✅ Successfully Extracted!</div>
+            <div id="extractedData"></div>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <strong>Success!</strong> Business card data has been saved to your Google Sheet.
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            <strong>Error:</strong> <span id="errorText">Something went wrong. Please try again.</span>
+        </div>
+
+        <button class="reset-button" id="resetButton" style="display: none;">Scan Another Card</button>
     </div>
-    
-    <pre class="result" id="result"></pre>
-  </div>
 
-  <script>
-    // Auto-focus the file input on page load
-    window.addEventListener('load', () => {
-      document.getElementById('imageInput').focus();
-    });
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadSection = document.getElementById('uploadSection');
+        const loadingSection = document.getElementById('loadingSection');
+        const resultSection = document.getElementById('resultSection');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const resetButton = document.getElementById('resetButton');
+        const extractedData = document.getElementById('extractedData');
+        const errorText = document.getElementById('errorText');
 
-    // Handle file selection
-    document.getElementById('imageInput').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      
-      // Show loading state
-      document.getElementById('loading').style.display = 'block';
-      document.getElementById('result').style.display = 'none';
-      document.querySelector('.camera-button').classList.remove('pulse');
-      
-      try {
-        const reader = new FileReader();
-        reader.onloadend = async () => {
-          const base64 = reader.result.split(',')[1];
-          
-          const response = await fetch('/api/upload', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image: base64 })
-          });
-          
-          const result = await response.json();
-          
-          // Hide loading and show results
-          document.getElementById('loading').style.display = 'none';
-          document.getElementById('result').style.display = 'block';
-          document.getElementById('result').textContent = JSON.stringify(result, null, 2);
-          
-          // Reset button animation
-          document.querySelector('.camera-button').classList.add('pulse');
-        };
-        reader.readAsDataURL(file);
-      } catch (error) {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('result').style.display = 'block';
-        document.getElementById('result').textContent = 'Error: ' + error.message;
-      }
-    });
-  </script>
+        fileInput.addEventListener('change', handleFileSelect);
+        resetButton.addEventListener('click', resetApp);
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Show loading state
+            uploadSection.style.display = 'none';
+            loadingSection.style.display = 'flex';
+            hideMessages();
+
+            // Upload and process the image
+            uploadImage(file);
+        }
+
+        async function uploadImage(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showSuccess(result.data);
+                } else {
+                    showError(result.message || 'Failed to process business card');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                showError('Network error. Please check your connection and try again.');
+            }
+        }
+
+        function showSuccess(data) {
+            loadingSection.style.display = 'none';
+            
+            // Display extracted data
+            displayExtractedData(data);
+            resultSection.style.display = 'block';
+            successMessage.style.display = 'block';
+            resetButton.style.display = 'inline-block';
+            
+            // Add success animation
+            resultSection.classList.add('success-animation');
+            setTimeout(() => {
+                resultSection.classList.remove('success-animation');
+            }, 600);
+        }
+
+        function showError(message) {
+            loadingSection.style.display = 'none';
+            uploadSection.style.display = 'block';
+            errorMessage.style.display = 'block';
+            errorText.textContent = message;
+            resetButton.style.display = 'inline-block';
+        }
+
+        function displayExtractedData(data) {
+            const fields = [
+                { label: 'Name', value: data.full_name },
+                { label: 'Email', value: data.email },
+                { label: 'Phone', value: data.handphone_number },
+                { label: 'Job Title', value: data.job_title },
+                { label: 'Company', value: data.company_name },
+                { label: 'Website', value: data.company_website },
+                { label: 'City', value: data.city },
+                { label: 'Country', value: data.country }
+            ];
+
+            let html = '';
+            fields.forEach(field => {
+                if (field.value && field.value.trim() !== '') {
+                    html += `
+                        <div class="result-item">
+                            <span class="result-label">${field.label}:</span>
+                            <span class="result-value">${field.value}</span>
+                        </div>
+                    `;
+                }
+            });
+
+            extractedData.innerHTML = html;
+        }
+
+        function resetApp() {
+            // Reset file input
+            fileInput.value = '';
+            
+            // Show upload section
+            uploadSection.style.display = 'block';
+            loadingSection.style.display = 'none';
+            resultSection.style.display = 'none';
+            resetButton.style.display = 'none';
+            
+            hideMessages();
+        }
+
+        function hideMessages() {
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+        }
+
+        // Auto-focus on the file input for faster interaction
+        window.addEventListener('load', () => {
+            // Small delay to ensure everything is loaded
+            setTimeout(() => {
+                fileInput.focus();
+            }, 100);
+        });
+
+        // Prevent zoom on input focus (iOS Safari)
+        fileInput.addEventListener('focus', (e) => {
+            e.preventDefault();
+        });
+    </script>
 </body>
 </html>
