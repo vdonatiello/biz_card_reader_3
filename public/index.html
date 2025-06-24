@@ -10,327 +10,531 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            color: white;
         }
-        
+
         .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 20px;
             text-align: center;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             max-width: 400px;
             width: 100%;
         }
-        
-        .header {
+
+        h1 {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
             margin-bottom: 40px;
         }
-        
-        .title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, #fff, #e0e0e0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+
+        /* Camera Button Styles */
+        .camera-section {
+            margin-bottom: 30px;
         }
-        
-        .subtitle {
-            font-size: 16px;
-            opacity: 0.9;
-            margin-bottom: 20px;
-        }
-        
-        .scan-area {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-        
+
         .camera-button {
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #4CAF50, #45a049);
+            background: linear-gradient(145deg, #4CAF50, #45a049);
             border: none;
+            cursor: pointer;
+            position: relative;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
-            position: relative;
-            overflow: hidden;
         }
-        
+
         .camera-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.6);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
         }
-        
+
         .camera-button:active {
             transform: scale(0.95);
         }
-        
+
         .camera-icon {
-            font-size: 60px;
-            color: white;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        
-        .button-text {
-            position: absolute;
-            bottom: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            color: white;
-            text-shadow: 0 1px 5px rgba(0,0,0,0.3);
-        }
-        
-        .gallery-option {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 12px;
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .camera-icon::before {
+            content: "📷";
+            font-size: 40px;
+        }
+
+        .camera-options {
+            display: flex;
             gap: 10px;
-            padding: 12px 24px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .option-button {
+            padding: 12px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
             border-radius: 25px;
             cursor: pointer;
-            transition: all 0.3s ease;
             font-size: 14px;
-            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
-        
-        .gallery-option:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
+
+        .option-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
         }
-        
-        .gallery-icon {
-            font-size: 18px;
+
+        .option-button.primary {
+            background: linear-gradient(145deg, #4CAF50, #45a049);
+            border-color: #4CAF50;
+            font-weight: 600;
         }
-        
-        .hidden-input {
+
+        /* File Input Styles */
+        .file-input {
             display: none;
         }
-        
+
+        /* Loading State */
         .loading {
             display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 18px;
         }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
+
+        .loading-spinner {
             border: 3px solid rgba(255, 255, 255, 0.3);
             border-top: 3px solid white;
             border-radius: 50%;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
         }
-        
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
-        .success, .error {
-            display: none;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            text-align: left;
-            max-width: 100%;
-        }
-        
-        .success {
-            border-left: 4px solid #4CAF50;
-        }
-        
-        .error {
-            border-left: 4px solid #f44336;
-        }
-        
+
+        /* Data Preview Styles */
         .data-preview {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-            font-family: monospace;
-            font-size: 12px;
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
             text-align: left;
-            white-space: pre-wrap;
         }
-        
-        .back-button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            border-radius: 20px;
+
+        .data-preview h3 {
             color: white;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .data-field {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-field:last-child {
+            border-bottom: none;
+        }
+
+        .field-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            min-width: 100px;
+        }
+
+        .field-value {
+            color: white;
+            text-align: right;
+            word-break: break-word;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: none;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
             cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
             transition: all 0.3s ease;
         }
-        
-        .back-button:hover {
+
+        .confirm-btn {
+            background: linear-gradient(145deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .add-back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .add-back-btn:hover {
             background: rgba(255, 255, 255, 0.3);
         }
-        
+
+        /* Success/Error States */
+        .result-message {
+            display: none;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+
+        .success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        /* Back Side Indicator */
+        .back-side-indicator {
+            display: none;
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
         @media (max-width: 480px) {
+            .container {
+                padding: 30px 15px;
+            }
+            
             .camera-button {
                 width: 180px;
                 height: 180px;
             }
             
             .camera-icon {
-                font-size: 50px;
+                width: 70px;
+                height: 70px;
             }
             
-            .title {
-                font-size: 24px;
+            .camera-icon::before {
+                font-size: 35px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1 class="title">Business Card Scanner</h1>
-            <p class="subtitle">Instantly digitize and organize your business contacts</p>
-        </div>
-        
-        <div class="scan-area" id="scanArea">
-            <button class="camera-button" onclick="triggerCamera()">
-                <span class="camera-icon">📷</span>
-                <span class="button-text">SCAN CARD</span>
-            </button>
-            
-            <div class="gallery-option" onclick="triggerGallery()">
-                <span class="gallery-icon">📁</span>
-                <span>Choose from Photos</span>
+        <h1>Business Card Scanner</h1>
+        <p class="subtitle">Capture and extract contact information instantly</p>
+
+        <!-- Initial Camera Section -->
+        <div class="camera-section" id="cameraSection">
+            <div class="camera-button" onclick="takePhoto()">
+                <div class="camera-icon"></div>
             </div>
             
-            <!-- Hidden file inputs -->
-            <input type="file" id="cameraInput" class="hidden-input" accept="image/*" capture="camera" onchange="handleFileSelect(event)">
-            <input type="file" id="galleryInput" class="hidden-input" accept="image/*" onchange="handleFileSelect(event)">
+            <div class="camera-options">
+                <label for="cameraInput" class="option-button primary">
+                    📸 Take Photo
+                </label>
+                <label for="galleryInput" class="option-button">
+                    📁 From Gallery
+                </label>
+            </div>
         </div>
-        
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Processing your business card...</p>
-            <p style="font-size: 14px; opacity: 0.8;">Using AI to extract contact information</p>
+
+        <!-- File Inputs -->
+        <input type="file" id="cameraInput" class="file-input" accept="image/*" capture="camera">
+        <input type="file" id="galleryInput" class="file-input" accept="image/*">
+        <input type="file" id="backSideInput" class="file-input" accept="image/*">
+
+        <!-- Loading State -->
+        <div class="loading" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p>Processing business card...</p>
         </div>
-        
-        <div class="success" id="success">
-            <h3>✅ Success!</h3>
-            <p>Business card processed successfully. Data has been added to your Google Sheet.</p>
-            <div class="data-preview" id="dataPreview"></div>
-            <button class="back-button" onclick="resetApp()">Scan Another Card</button>
+
+        <!-- Back Side Indicator -->
+        <div class="back-side-indicator" id="backSideIndicator">
+            📄 Processing back side of business card
         </div>
-        
-        <div class="error" id="error">
-            <h3>❌ Error</h3>
-            <p id="errorMessage">Something went wrong. Please try again.</p>
-            <button class="back-button" onclick="resetApp()">Try Again</button>
+
+        <!-- Data Preview -->
+        <div class="data-preview" id="dataPreview">
+            <h3>📋 Extracted Information</h3>
+            <div id="extractedData"></div>
         </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons" id="actionButtons">
+            <button class="action-button confirm-btn" onclick="confirmAndSave()">
+                ✅ Save to Sheet
+            </button>
+            <button class="action-button add-back-btn" onclick="addBackSide()">
+                ➕ Add Back Side
+            </button>
+        </div>
+
+        <!-- Result Messages -->
+        <div class="result-message" id="resultMessage"></div>
     </div>
 
     <script>
-        function triggerCamera() {
+        let currentFrontData = null;
+        let currentBackData = null;
+        let processingMode = 'single';
+
+        // Initialize event listeners
+        document.getElementById('cameraInput').addEventListener('change', handleImageUpload);
+        document.getElementById('galleryInput').addEventListener('change', handleImageUpload);
+        document.getElementById('backSideInput').addEventListener('change', handleBackSideUpload);
+
+        function takePhoto() {
             document.getElementById('cameraInput').click();
         }
-        
-        function triggerGallery() {
-            document.getElementById('galleryInput').click();
-        }
-        
-        function handleFileSelect(event) {
+
+        function handleImageUpload(event) {
             const file = event.target.files[0];
             if (file) {
-                processImage(file);
+                console.log('Image selected:', file.name, file.size, 'bytes');
+                showLoading('Processing business card...');
+                processingMode = 'single';
+                uploadImage(file, 'front');
             }
         }
-        
-        function showLoading() {
-            document.getElementById('scanArea').style.display = 'none';
-            document.getElementById('loading').style.display = 'flex';
-            document.getElementById('success').style.display = 'none';
-            document.getElementById('error').style.display = 'none';
+
+        function handleBackSideUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                console.log('Back side image selected:', file.name);
+                showLoading('Processing back side...');
+                document.getElementById('backSideIndicator').style.display = 'block';
+                processingMode = 'double';
+                uploadImage(file, 'back');
+            }
         }
-        
-        function showSuccess(data) {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('success').style.display = 'block';
-            document.getElementById('dataPreview').textContent = JSON.stringify(data, null, 2);
-        }
-        
-        function showError(message) {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('error').style.display = 'block';
-            document.getElementById('errorMessage').textContent = message;
-        }
-        
-        function resetApp() {
-            document.getElementById('scanArea').style.display = 'flex';
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('success').style.display = 'none';
-            document.getElementById('error').style.display = 'none';
+
+        function uploadImage(file, side = 'front') {
+            const formData = new FormData();
             
-            // Clear file inputs
-            document.getElementById('cameraInput').value = '';
-            document.getElementById('galleryInput').value = '';
-        }
-        
-        async function processImage(file) {
-            showLoading();
-            
-            try {
-                const formData = new FormData();
+            if (side === 'front') {
                 formData.append('image', file);
-                
-                const response = await fetch('/api/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-                
+                formData.append('processing_mode', processingMode);
+            } else {
+                // For back side, send both images
+                formData.append('image', new File([currentFrontData.imageBlob], 'front.jpg'));
+                formData.append('back_image', file);
+                formData.append('processing_mode', 'double');
+            }
+
+            fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`HTTP ${response.status}`);
                 }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                hideLoading();
                 
-                const result = await response.json();
-                
-                if (result.success) {
-                    showSuccess(result.data);
+                if (data.success) {
+                    if (side === 'front') {
+                        // Store front data and image for potential back side processing
+                        currentFrontData = {
+                            ...data.extracted_data,
+                            imageBlob: file
+                        };
+                        showDataPreview(data.extracted_data, false);
+                    } else {
+                        // Back side processed - show combined data
+                        document.getElementById('backSideIndicator').style.display = 'none';
+                        showDataPreview(data.extracted_data, true);
+                        showSuccessMessage('Both sides processed successfully! Data saved to Google Sheets.');
+                    }
                 } else {
-                    showError(result.error || 'Failed to process business card');
+                    showError(data.message || 'Processing failed');
                 }
-                
-            } catch (error) {
-                console.error('Error processing image:', error);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                hideLoading();
+                document.getElementById('backSideIndicator').style.display = 'none';
                 showError('Network error. Please check your connection and try again.');
+            });
+        }
+
+        function showDataPreview(data, isComplete = false) {
+            const preview = document.getElementById('dataPreview');
+            const extractedDataDiv = document.getElementById('extractedData');
+            const actionButtons = document.getElementById('actionButtons');
+            
+            // Hide camera section
+            document.getElementById('cameraSection').style.display = 'none';
+            
+            // Build data display
+            let html = '';
+            const fields = {
+                'full_name': 'Name',
+                'company_name': 'Company',
+                'position': 'Position',
+                'email': 'Email',
+                'handphone_number': 'Phone',
+                'address': 'Address',
+                'city': 'City',
+                'country': 'Country',
+                'website': 'Website',
+                'social_media': 'Social Media',
+                'company_description': 'Description'
+            };
+            
+            for (const [key, label] of Object.entries(fields)) {
+                const value = data[key] || '';
+                if (value) {
+                    html += `
+                        <div class="data-field">
+                            <span class="field-label">${label}:</span>
+                            <span class="field-value">${value}</span>
+                        </div>
+                    `;
+                }
+            }
+            
+            extractedDataDiv.innerHTML = html;
+            preview.style.display = 'block';
+            
+            if (isComplete) {
+                // Both sides processed - hide action buttons
+                actionButtons.style.display = 'none';
+            } else {
+                // Show action buttons for single side
+                actionButtons.style.display = 'flex';
             }
         }
-    </script>
-</body>
-</html>
+
+        function confirmAndSave() {
+            // Process as single-sided card
+            showLoading('Saving to Google Sheets...');
+            
+            // The data is already sent to webhook during processing
+            // Just show success message
+            setTimeout(() => {
+                hideLoading();
+                showSuccessMessage('Business card saved to Google Sheets successfully!');
+                document.getElementById('actionButtons').style.display = 'none';
+            }, 1000);
+        }
+
+        function addBackSide() {
+            // Hide action buttons and show back side capture
+            document.getElementById('actionButtons').style.display = 'none';
+            document.getElementById('backSideInput').click();
+        }
+
+        function showLoading(message) {
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('loadingState').querySelector('p').textContent = message;
+            document.getElementById('dataPreview').style.display = 'none';
+            document.getElementById('actionButtons').style.display = 'none';
+            document.getElementById('resultMessage').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingState').style.display = 'none';
+        }
+
+        function showSuccessMessage(message) {
+            const resultDiv = document.getElementById('resultMessage');
+            resultDiv.textContent = message;
+            resultDiv.className = 'result-message success';
+            resultDiv.style.display = 'block';
+            
+            // Add restart button
+            setTimeout(() => {
+                resultDiv.innerHTML = message + '<br><button onclick="restart()" style="margin-top:10px; padding:8px 16px; background:white; color:#4CAF50; border:none; border-radius:20px; cursor:pointer;">📄 Scan Another Card</button>';
+            }, 1000);
+        }
+
+        function showError(message) {
+            const resultDiv = document.getElementById('resultMessage');
+            resultDiv.textContent = message;
+            resultDiv.className = 'result-message error';
+            resultDiv.style.display = 'block';
+            
+            // Add retry button
+            setTimeout(() => {
+                resultDiv.innerHTML = message + '<br><button onclick="restart()" style="margin-top:10px; padding:8px 16px; background:white; color:#f44336; border:none; border-radius:20px; cursor:pointer;">🔄 Try Again</button>';
+            }, 1000);
+        }
+
+        function restart() {
+            // Reset all states
+            currentFrontData = null;
+            currentBackData = null;
+            processingMode = 'single';
+            
+            // Reset UI
+            document.getElementById('cameraSection').style.display = 'block';
+            document.getElementById('dataPreview').style.display = 'none';
+            document.getElementById('actionButtons').style.display = 'none';
+            document.getElementById('resultMessage').style.display = 'none';
+            document.getElementById('backSideIndicator').style.
