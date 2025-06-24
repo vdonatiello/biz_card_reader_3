@@ -6,299 +6,320 @@ from datetime import datetime
 from http.server import BaseHTTPRequestHandler
 import io
 from PIL import Image
+import cgi
 
 class handler(BaseHTTPRequestHandler):
-    def do_POST(self):
-        try:
-            # Get content length and read the request body
-            content_length = int(self.headers['Content-Length'])
-            post_data = self.rfile.read(content_length)
-            
-            # Handle multipart form data (image upload)
-            if 'multipart/form-data' in self.headers.get('Content-Type', ''):
-                # Extract image from multipart data
-                image_data = self.extract_image_from_multipart(post_data)
-                if not image_data:
-                    self.send_error_response("No image found in request")
-                    return
-            else:
-                self.send_error_response("Invalid content type")
-                return
-
-            # Convert image to base64 for GPT-4 Vision
-            base64_image = base64.b64encode(image_data).decode('utf-8')
-            
-            # Extract business card data using GPT-4 Vision
-            extracted_data = self.extract_business_card_data(base64_image)
-            
-            if not extracted_data:
-                self.send_error_response("Failed to extract data from business card")
-                return
-
-            # Send data to Make.com webhook
-            webhook_success = self.send_to_webhook(extracted_data)
-            
-            if webhook_success:
-                self.send_success_response(extracted_data)
-            else:
-                self.send_error_response("Failed to save data to Google Sheets")
-                
-        except Exception as e:
-            print(f"Error processing request: {str(e)}")
-            self.send_error_response(f"Server error: {str(e)}")
-
     def do_OPTIONS(self):
-        # Handle CORS preflight requests
+        """Handle CORS preflight requests"""
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
 
-    def extract_image_from_multipart(self, post_data):
-        """Extract image data from multipart form data"""
+    def do_POST(self):
         try:
-            # Simple multipart parsing - look for image data
-            boundary_start = post_data.find(b'\r\n\r\n')
-            if boundary_start == -1:
-                return None
-                
-            # Find the start of actual image data
-            image_start = boundary_start + 4
+            print("=== Processing business card upload ===")
             
-            # Find the end boundary
-            boundary_end = post_data.find(b'\r\n--', image_start)
-            if boundary_end == -1:
-                boundary_end = len(post_data)
-                
-            image_data = post_data[image_start:boundary_end]
+            # CORS headers
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+            self.send_header('Access-Control-Allow-Headers', 'Content-Type')
             
-            # Validate it's actually image data
-            if len(image_data) < 100:  # Too small to be a real image
-                return None
-                
-            return image_data
+            # Parse multipart form data
+            content_type = self.headers.get('Content-Type', '')
+            if not content_type.startswith('multipart/form-data'):
+                raise ValueError("Expected multipart/form-data")
+            
+            # Get form data
+            form = cgi.FieldStorage(
+                fp=self.rfile,
+                headers=self.headers,
+                environ={'REQUEST_METHOD': 'POST'}
+            )
+            
+            # Extract images and processing mode
+            front_image = None
+            back_image = None
+            processing_mode = "single"  # default
+            
+            if "image" in form:
+                front_image = form["image"].file.read()
+                print(f"Front image received: {len(front_image)} bytes")
+            
+            if "back_image" in form:
+                back_image = form["back_image"].file.read()
+                processing_mode = "double"
+                print(f"Back image received: {len(back_image)} bytes")
+            
+            if "processing_mode" in form:
+                processing_mode = form["processing_mode"].value
+                print(f"Processing mode: {processing_mode}")
+            
+            if not front_image:
+                raise ValueError("No image provided")
+            
+            # Process front side (always required)
+            print("Processing front side...")
+            front_data = self.process_business_card_image(front_image, "front")
+            
+            # Process back side if provided
+            back_data = {}
+            if back_image and processing_mode == "double":
+                print("Processing back side...")
+                back_data = self.process_business_card_image(back_image, "back")
+            
+            # Merge data from both sides
+            final_data = self.merge_card_data(front_data, back_data)
+            
+            # Add timestamp
+            final_data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            print(f"Final extracted data: {json.dumps(final_data, indent=2)}")
+            
+            # Send to webhook
+            webhook_response = self.send_to_webhook(final_data)
+            
+            # Return success response
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            
+            response_data = {
+                "success": True,
+                "message": "Business card processed successfully",
+                "extracted_data": final_data,
+                "processing_mode": processing_mode,
+                "webhook_status": webhook_response
+            }
+            
+            self.wfile.write(json.dumps(response_data).encode())
+            print("=== Processing completed successfully ===")
             
         except Exception as e:
-            print(f"Error extracting image: {str(e)}")
-            return None
-
-    def extract_business_card_data(self, base64_image):
-        """Use GPT-4 Vision to extract structured data from business card"""
-        try:
-            api_key = os.environ.get('OPENAI_API_KEY')
-            if not api_key:
-                print("OpenAI API key not found")
-                return None
-
-            headers = {
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {api_key}"
-            }
-
-            prompt = """
-            You are an expert OCR system specialized in business card data extraction. 
+            print(f"Error processing business card: {str(e)}")
+            self.send_response(500)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
             
-            Analyze this business card image and extract information into a JSON object with these exact fields:
-            - full_name: Complete name as written on card (preserve original format and order)
-            - first_name: First/given name only
-            - last_name: Last/family name only  
-            - email: Email address (validate format)
-            - handphone_number: Phone/mobile number (preserve original formatting including country codes)
-            - job_title: Job title or position (complete title as shown)
-            - company_name: Company name (full official name)
-            - company_website: Website URL (add https:// if missing)
-            - city: City from address (just city name)
-            - country: Country from address (just country name)
+            error_response = {
+                "success": False,
+                "error": str(e),
+                "message": "Failed to process business card"
+            }
+            
+            self.wfile.write(json.dumps(error_response).encode())
 
-            IMPORTANT INSTRUCTIONS:
-            1. For names: Handle both Western (first last) and Asian (family given) name orders correctly
-            2. If only one name visible, put it in first_name, leave last_name empty
-            3. For Asian names, respect cultural naming conventions 
-            4. Extract phone numbers exactly as shown (including +country codes, spaces, dashes)
-            5. For addresses: separate city and country, ignore street address
-            6. If any field not found or unclear, use empty string ""
-            7. Validate email format - must contain @ and valid domain
-            8. For websites: add https:// prefix if missing, ensure valid format
-
-            Return ONLY a valid JSON object, no explanations or additional text.
-            """
-
+    def process_business_card_image(self, image_data, side="front"):
+        """Process a single business card image and extract data"""
+        try:
+            # Load and process image
+            image = Image.open(io.BytesIO(image_data))
+            print(f"Original image size: {image.size}, mode: {image.mode}")
+            
+            # Convert RGBA to RGB if needed
+            if image.mode in ('RGBA', 'LA'):
+                background = Image.new('RGB', image.size, (255, 255, 255))
+                if image.mode == 'RGBA':
+                    background.paste(image, mask=image.split()[-1])
+                else:
+                    background.paste(image)
+                image = background
+            
+            # Resize if too large (OpenAI has size limits)
+            max_size = 2048
+            if image.width > max_size or image.height > max_size:
+                image.thumbnail((max_size, max_size), Image.Resampling.LANCZOS)
+                print(f"Resized image to: {image.size}")
+            
+            # Convert to base64
+            buffer = io.BytesIO()
+            image.save(buffer, format='JPEG', quality=85)
+            base64_image = base64.b64encode(buffer.getvalue()).decode()
+            
+            # Prepare OpenAI API request
+            openai_api_key = os.environ.get('OPENAI_API_KEY')
+            if not openai_api_key:
+                raise ValueError("OpenAI API key not configured")
+            
+            # Enhanced prompt based on card side
+            if side == "front":
+                extraction_prompt = """
+                Extract business card information from this front side image. Return ONLY a JSON object with these exact fields:
+                {
+                    "full_name": "person's complete name",
+                    "first_name": "first name only", 
+                    "last_name": "last name only",
+                    "email": "email address",
+                    "handphone_number": "phone number with country code if visible",
+                    "company_name": "company or organization name",
+                    "position": "job title or position",
+                    "address": "complete address",
+                    "city": "city name",
+                    "country": "country name", 
+                    "website": "website URL"
+                }
+                
+                Important guidelines:
+                - Handle both Western and Asian naming conventions
+                - Preserve international phone number formatting
+                - Validate email format (must contain @)
+                - Extract website URL if present
+                - If information is not clearly visible, use empty string ""
+                - Clean common OCR errors: O→0, l→1, I→1 in phone/email
+                """
+            else:  # back side
+                extraction_prompt = """
+                Extract additional business card information from this back side image. Look for:
+                - Additional contact information
+                - Social media handles
+                - QR codes or website URLs
+                - Secondary addresses
+                - Additional phone numbers
+                - Company descriptions or services
+                
+                Return ONLY a JSON object with these fields (use empty string if not found):
+                {
+                    "additional_email": "secondary email if present",
+                    "additional_phone": "secondary phone number",
+                    "social_media": "social media handles or URLs",
+                    "additional_website": "additional website URLs",
+                    "company_description": "company services or description",
+                    "additional_address": "secondary address if different",
+                    "additional_info": "any other relevant information"
+                }
+                """
+            
+            # Call OpenAI API
+            headers = {
+                "Authorization": f"Bearer {openai_api_key}",
+                "Content-Type": "application/json"
+            }
+            
             payload = {
-                "model": "gpt-4o",  # Using latest GPT-4o which has better vision capabilities
+                "model": "gpt-4o",
                 "messages": [
                     {
                         "role": "user",
                         "content": [
                             {
                                 "type": "text",
-                                "text": prompt
+                                "text": extraction_prompt
                             },
                             {
                                 "type": "image_url",
                                 "image_url": {
                                     "url": f"data:image/jpeg;base64,{base64_image}",
-                                    "detail": "high"  # High detail for better OCR accuracy
+                                    "detail": "high"
                                 }
                             }
                         ]
                     }
                 ],
-                "max_tokens": 500,
-                "temperature": 0.1  # Lower temperature for more consistent extraction
+                "max_tokens": 1000,
+                "temperature": 0.1
             }
-
+            
+            print(f"Calling OpenAI API for {side} side...")
             response = requests.post(
                 "https://api.openai.com/v1/chat/completions",
                 headers=headers,
                 json=payload,
                 timeout=30
             )
-
-            if response.status_code == 200:
-                result = response.json()
-                content = result['choices'][0]['message']['content'].strip()
-                
-                # Try to parse the JSON response
-                try:
-                    extracted_data = json.loads(content)
-                    
-                    # Add timestamp
-                    extracted_data['timestamp'] = datetime.now().isoformat() + 'Z'
-                    
-                    # Validate and clean data
-                    extracted_data = self.validate_and_clean_data(extracted_data)
-                    
-                    return extracted_data
-                    
-                except json.JSONDecodeError:
-                    print(f"Failed to parse GPT response as JSON: {content}")
-                    return None
-            else:
-                print(f"OpenAI API error: {response.status_code} - {response.text}")
-                return None
-
-        except Exception as e:
-            print(f"Error in GPT-4 Vision extraction: {str(e)}")
-            return None
-
-    def validate_and_clean_data(self, data):
-        """Validate and clean the extracted data with improved logic"""
-        required_fields = [
-            'timestamp', 'full_name', 'first_name', 'last_name', 'email',
-            'handphone_number', 'job_title', 'company_name', 'company_website',
-            'city', 'country'
-        ]
-        
-        # Ensure all required fields exist
-        for field in required_fields:
-            if field not in data:
-                data[field] = ""
-        
-        # Clean and validate email
-        if data['email']:
-            email = data['email'].strip()
-            if '@' not in email or '.' not in email.split('@')[-1]:
-                data['email'] = ""  # Invalid email
-            else:
-                data['email'] = email.lower()
-        
-        # Clean website URL
-        if data['company_website']:
-            website = data['company_website'].strip()
-            if website and not website.startswith(('http://', 'https://')):
-                data['company_website'] = 'https://' + website
-            # Validate basic URL format
-            if website and '.' not in website:
-                data['company_website'] = ""
-        
-        # Improved name parsing - handle Asian and Western names
-        if data['full_name'] and not (data['first_name'] and data['last_name']):
-            full_name = data['full_name'].strip()
-            names = full_name.split()
             
-            if len(names) == 1:
-                # Single name - put in first_name
-                data['first_name'] = names[0]
-                data['last_name'] = ""
-            elif len(names) >= 2:
-                # For Western names: First Middle... Last
-                # For Asian names: Family Given (GPT-4o should handle this correctly)
-                # Let's trust GPT-4o's cultural understanding, but provide fallback
-                if not data['first_name']:
-                    data['first_name'] = names[0]
-                if not data['last_name']:
-                    data['last_name'] = ' '.join(names[1:])
+            if response.status_code != 200:
+                print(f"OpenAI API error: {response.status_code} - {response.text}")
+                raise ValueError(f"OpenAI API error: {response.status_code}")
+            
+            # Parse response
+            result = response.json()
+            extracted_text = result['choices'][0]['message']['content']
+            print(f"OpenAI response for {side}: {extracted_text}")
+            
+            # Parse JSON from response
+            try:
+                # Clean the response - sometimes GPT includes extra text
+                if extracted_text.strip().startswith('{'):
+                    json_start = extracted_text.find('{')
+                    json_end = extracted_text.rfind('}') + 1
+                    json_text = extracted_text[json_start:json_end]
+                else:
+                    # Look for JSON block
+                    import re
+                    json_match = re.search(r'\{.*\}', extracted_text, re.DOTALL)
+                    if json_match:
+                        json_text = json_match.group()
+                    else:
+                        raise ValueError("No JSON found in OpenAI response")
+                
+                extracted_data = json.loads(json_text)
+                print(f"Successfully parsed {side} side data: {extracted_data}")
+                return extracted_data
+                
+            except json.JSONDecodeError as e:
+                print(f"JSON parsing error for {side}: {e}")
+                print(f"Raw response: {extracted_text}")
+                raise ValueError(f"Failed to parse extracted data from {side} side")
+                
+        except Exception as e:
+            print(f"Error processing {side} side image: {str(e)}")
+            raise
+
+    def merge_card_data(self, front_data, back_data):
+        """Merge data from front and back sides of business card"""
+        # Start with front side data as base
+        merged_data = front_data.copy()
         
-        # Clean phone number - preserve formatting but remove obvious errors
-        if data['handphone_number']:
-            phone = data['handphone_number'].strip()
-            # Remove common OCR errors but preserve international formatting
-            phone = phone.replace('O', '0').replace('l', '1').replace('I', '1')
-            data['handphone_number'] = phone
+        # Add back side data if available
+        if back_data:
+            # Merge additional contact info
+            if back_data.get("additional_email") and not merged_data.get("email"):
+                merged_data["email"] = back_data["additional_email"]
+            
+            if back_data.get("additional_phone") and not merged_data.get("handphone_number"):
+                merged_data["handphone_number"] = back_data["additional_phone"]
+            
+            if back_data.get("additional_website") and not merged_data.get("website"):
+                merged_data["website"] = back_data["additional_website"]
+            
+            # Add new fields from back side
+            merged_data["social_media"] = back_data.get("social_media", "")
+            merged_data["company_description"] = back_data.get("company_description", "")
+            merged_data["additional_info"] = back_data.get("additional_info", "")
+            
+            # Note that back side was processed
+            merged_data["back_side_processed"] = True
+        else:
+            merged_data["back_side_processed"] = False
         
-        # Clean text fields
-        text_fields = ['job_title', 'company_name', 'city', 'country']
-        for field in text_fields:
-            if data[field]:
-                data[field] = data[field].strip()
-        
-        return data
+        return merged_data
 
     def send_to_webhook(self, data):
         """Send extracted data to Make.com webhook"""
         try:
             webhook_url = os.environ.get('MAKE_WEBHOOK_URL')
             if not webhook_url:
-                webhook_url = "https://hook.eu2.make.com/oz6cgrhqg8bctxvqhscaws053nery1mp"
+                raise ValueError("Webhook URL not configured")
             
-            headers = {
-                'Content-Type': 'application/json'
-            }
+            print(f"Sending data to webhook: {webhook_url}")
             
             response = requests.post(
                 webhook_url,
                 json=data,
-                headers=headers,
-                timeout=15
+                headers={'Content-Type': 'application/json'},
+                timeout=10
             )
             
-            if response.status_code in [200, 201, 204]:
-                print(f"Webhook success: {response.status_code}")
-                return True
+            print(f"Webhook response: {response.status_code}")
+            
+            if response.status_code == 200:
+                return {"status": "success", "message": "Data sent to Google Sheets"}
             else:
-                print(f"Webhook error: {response.status_code} - {response.text}")
-                return False
+                print(f"Webhook error: {response.text}")
+                return {"status": "error", "message": f"Webhook failed: {response.status_code}"}
                 
         except Exception as e:
-            print(f"Error sending to webhook: {str(e)}")
-            return False
-
-    def send_success_response(self, data):
-        """Send success response to frontend"""
-        self.send_response(200)
-        self.send_header('Content-Type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.end_headers()
-        
-        response_data = {
-            'success': True,
-            'message': 'Business card processed successfully',
-            'data': data
-        }
-        
-        self.wfile.write(json.dumps(response_data).encode())
-
-    def send_error_response(self, message):
-        """Send error response to frontend"""
-        self.send_response(400)
-        self.send_header('Content-Type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.end_headers()
-        
-        response_data = {
-            'success': False,
-            'message': message
-        }
-        
-        self.wfile.write(json.dumps(response_data).encode())
+            print(f"Webhook error: {str(e)}")
+            return {"status": "error", "message": f"Webhook failed: {str(e)}"}
