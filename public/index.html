@@ -10,9 +10,9 @@
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -22,397 +22,315 @@
             padding: 20px;
             color: white;
         }
-
+        
         .container {
+            text-align: center;
             max-width: 400px;
             width: 100%;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
-        .logo {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: white;
-        }
-
-        .subtitle {
-            font-size: 1rem;
-            opacity: 0.9;
+        
+        .header {
             margin-bottom: 40px;
-            line-height: 1.4;
         }
-
-        .upload-section {
-            position: relative;
-            margin-bottom: 30px;
+        
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-
-        .camera-button {
-            display: inline-block;
-            width: 200px;
-            height: 200px;
-            background: linear-gradient(145deg, #4CAF50, #45a049);
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
             margin-bottom: 20px;
         }
-
-        .camera-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(76, 175, 80, 0.4);
+        
+        .scan-area {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
         }
-
-        .camera-button:active {
-            transform: translateY(0);
-        }
-
-        .camera-icon {
-            font-size: 4rem;
-            color: white;
-            line-height: 200px;
-        }
-
-        .file-input {
-            position: absolute;
+        
+        .camera-button {
             width: 200px;
             height: 200px;
-            opacity: 0;
-            cursor: pointer;
             border-radius: 50%;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+            position: relative;
+            overflow: hidden;
         }
-
-        .instruction-text {
-            font-size: 1.1rem;
+        
+        .camera-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.6);
+        }
+        
+        .camera-button:active {
+            transform: scale(0.95);
+        }
+        
+        .camera-icon {
+            font-size: 60px;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .button-text {
+            position: absolute;
+            bottom: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.3);
+        }
+        
+        .gallery-option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
             font-weight: 500;
-            margin-bottom: 10px;
         }
-
-        .sub-instruction {
-            font-size: 0.9rem;
-            opacity: 0.8;
+        
+        .gallery-option:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
         }
-
+        
+        .gallery-icon {
+            font-size: 18px;
+        }
+        
+        .hidden-input {
+            display: none;
+        }
+        
         .loading {
             display: none;
             flex-direction: column;
             align-items: center;
             gap: 20px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
+        
         .spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid white;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        .result-section {
+        
+        .success, .error {
             display: none;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 20px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             text-align: left;
+            max-width: 100%;
         }
-
-        .result-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            text-align: center;
-            color: #4CAF50;
+        
+        .success {
+            border-left: 4px solid #4CAF50;
         }
-
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        
+        .error {
+            border-left: 4px solid #f44336;
         }
-
-        .result-label {
-            font-weight: 500;
-            opacity: 0.9;
-        }
-
-        .result-value {
-            font-weight: 400;
-            word-break: break-word;
-            max-width: 60%;
-            text-align: right;
-        }
-
-        .error-message {
-            display: none;
-            background: rgba(244, 67, 54, 0.2);
-            border: 1px solid rgba(244, 67, 54, 0.5);
-            border-radius: 10px;
+        
+        .data-preview {
+            background: rgba(0, 0, 0, 0.2);
             padding: 15px;
-            margin-top: 20px;
-            color: #ffcdd2;
-        }
-
-        .success-message {
-            display: none;
-            background: rgba(76, 175, 80, 0.2);
-            border: 1px solid rgba(76, 175, 80, 0.5);
             border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-            color: #c8e6c9;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            text-align: left;
+            white-space: pre-wrap;
         }
-
-        .reset-button {
-            background: linear-gradient(145deg, #ff6b6b, #ee5a52);
-            color: white;
+        
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
             border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 500;
+            border-radius: 20px;
+            color: white;
             cursor: pointer;
-            margin-top: 20px;
             transition: all 0.3s ease;
         }
-
-        .reset-button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
-
-        /* iPhone-specific optimizations */
+        
         @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            
-            .container {
-                padding: 30px 20px;
-            }
-            
             .camera-button {
                 width: 180px;
                 height: 180px;
             }
             
             .camera-icon {
-                font-size: 3.5rem;
-                line-height: 180px;
+                font-size: 50px;
             }
             
-            .file-input {
-                width: 180px;
-                height: 180px;
+            .title {
+                font-size: 24px;
             }
-        }
-
-        /* Animation for success state */
-        .success-animation {
-            animation: successPulse 0.6s ease-in-out;
-        }
-
-        @keyframes successPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">📱</div>
-        <h1>Business Card Scanner</h1>
-        <p class="subtitle">Capture business cards instantly and save to Google Sheets automatically</p>
+        <div class="header">
+            <h1 class="title">Business Card Scanner</h1>
+            <p class="subtitle">Instantly digitize and organize your business contacts</p>
+        </div>
         
-        <div class="upload-section" id="uploadSection">
-            <div class="camera-button" id="cameraButton">
+        <div class="scan-area" id="scanArea">
+            <button class="camera-button" onclick="triggerCamera()">
                 <span class="camera-icon">📷</span>
-                <input type="file" class="file-input" id="fileInput" accept="image/*" capture="camera">
+                <span class="button-text">SCAN CARD</span>
+            </button>
+            
+            <div class="gallery-option" onclick="triggerGallery()">
+                <span class="gallery-icon">📁</span>
+                <span>Choose from Photos</span>
             </div>
-            <div class="instruction-text">Tap to scan business card</div>
-            <div class="sub-instruction">Camera will open automatically</div>
+            
+            <!-- Hidden file inputs -->
+            <input type="file" id="cameraInput" class="hidden-input" accept="image/*" capture="camera" onchange="handleFileSelect(event)">
+            <input type="file" id="galleryInput" class="hidden-input" accept="image/*" onchange="handleFileSelect(event)">
         </div>
-
-        <div class="loading" id="loadingSection">
+        
+        <div class="loading" id="loading">
             <div class="spinner"></div>
-            <div>Processing your business card...</div>
-            <div style="font-size: 0.9rem; opacity: 0.8;">This may take a few seconds</div>
+            <p>Processing your business card...</p>
+            <p style="font-size: 14px; opacity: 0.8;">Using AI to extract contact information</p>
         </div>
-
-        <div class="result-section" id="resultSection">
-            <div class="result-title">✅ Successfully Extracted!</div>
-            <div id="extractedData"></div>
+        
+        <div class="success" id="success">
+            <h3>✅ Success!</h3>
+            <p>Business card processed successfully. Data has been added to your Google Sheet.</p>
+            <div class="data-preview" id="dataPreview"></div>
+            <button class="back-button" onclick="resetApp()">Scan Another Card</button>
         </div>
-
-        <div class="success-message" id="successMessage">
-            <strong>Success!</strong> Business card data has been saved to your Google Sheet.
+        
+        <div class="error" id="error">
+            <h3>❌ Error</h3>
+            <p id="errorMessage">Something went wrong. Please try again.</p>
+            <button class="back-button" onclick="resetApp()">Try Again</button>
         </div>
-
-        <div class="error-message" id="errorMessage">
-            <strong>Error:</strong> <span id="errorText">Something went wrong. Please try again.</span>
-        </div>
-
-        <button class="reset-button" id="resetButton" style="display: none;">Scan Another Card</button>
     </div>
 
     <script>
-        const fileInput = document.getElementById('fileInput');
-        const uploadSection = document.getElementById('uploadSection');
-        const loadingSection = document.getElementById('loadingSection');
-        const resultSection = document.getElementById('resultSection');
-        const successMessage = document.getElementById('successMessage');
-        const errorMessage = document.getElementById('errorMessage');
-        const resetButton = document.getElementById('resetButton');
-        const extractedData = document.getElementById('extractedData');
-        const errorText = document.getElementById('errorText');
-
-        fileInput.addEventListener('change', handleFileSelect);
-        resetButton.addEventListener('click', resetApp);
-
+        function triggerCamera() {
+            document.getElementById('cameraInput').click();
+        }
+        
+        function triggerGallery() {
+            document.getElementById('galleryInput').click();
+        }
+        
         function handleFileSelect(event) {
             const file = event.target.files[0];
-            if (!file) return;
-
-            // Show loading state
-            uploadSection.style.display = 'none';
-            loadingSection.style.display = 'flex';
-            hideMessages();
-
-            // Upload and process the image
-            uploadImage(file);
+            if (file) {
+                processImage(file);
+            }
         }
-
-        async function uploadImage(file) {
-            const formData = new FormData();
-            formData.append('image', file);
-
+        
+        function showLoading() {
+            document.getElementById('scanArea').style.display = 'none';
+            document.getElementById('loading').style.display = 'flex';
+            document.getElementById('success').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+        }
+        
+        function showSuccess(data) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('success').style.display = 'block';
+            document.getElementById('dataPreview').textContent = JSON.stringify(data, null, 2);
+        }
+        
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('errorMessage').textContent = message;
+        }
+        
+        function resetApp() {
+            document.getElementById('scanArea').style.display = 'flex';
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('success').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            
+            // Clear file inputs
+            document.getElementById('cameraInput').value = '';
+            document.getElementById('galleryInput').value = '';
+        }
+        
+        async function processImage(file) {
+            showLoading();
+            
             try {
+                const formData = new FormData();
+                formData.append('image', file);
+                
                 const response = await fetch('/api/upload', {
                     method: 'POST',
                     body: formData
                 });
-
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const result = await response.json();
-
+                
                 if (result.success) {
                     showSuccess(result.data);
                 } else {
-                    showError(result.message || 'Failed to process business card');
+                    showError(result.error || 'Failed to process business card');
                 }
+                
             } catch (error) {
-                console.error('Upload error:', error);
+                console.error('Error processing image:', error);
                 showError('Network error. Please check your connection and try again.');
             }
         }
-
-        function showSuccess(data) {
-            loadingSection.style.display = 'none';
-            
-            // Display extracted data
-            displayExtractedData(data);
-            resultSection.style.display = 'block';
-            successMessage.style.display = 'block';
-            resetButton.style.display = 'inline-block';
-            
-            // Add success animation
-            resultSection.classList.add('success-animation');
-            setTimeout(() => {
-                resultSection.classList.remove('success-animation');
-            }, 600);
-        }
-
-        function showError(message) {
-            loadingSection.style.display = 'none';
-            uploadSection.style.display = 'block';
-            errorMessage.style.display = 'block';
-            errorText.textContent = message;
-            resetButton.style.display = 'inline-block';
-        }
-
-        function displayExtractedData(data) {
-            const fields = [
-                { label: 'Name', value: data.full_name },
-                { label: 'Email', value: data.email },
-                { label: 'Phone', value: data.handphone_number },
-                { label: 'Job Title', value: data.job_title },
-                { label: 'Company', value: data.company_name },
-                { label: 'Website', value: data.company_website },
-                { label: 'City', value: data.city },
-                { label: 'Country', value: data.country }
-            ];
-
-            let html = '';
-            fields.forEach(field => {
-                if (field.value && field.value.trim() !== '') {
-                    html += `
-                        <div class="result-item">
-                            <span class="result-label">${field.label}:</span>
-                            <span class="result-value">${field.value}</span>
-                        </div>
-                    `;
-                }
-            });
-
-            extractedData.innerHTML = html;
-        }
-
-        function resetApp() {
-            // Reset file input
-            fileInput.value = '';
-            
-            // Show upload section
-            uploadSection.style.display = 'block';
-            loadingSection.style.display = 'none';
-            resultSection.style.display = 'none';
-            resetButton.style.display = 'none';
-            
-            hideMessages();
-        }
-
-        function hideMessages() {
-            successMessage.style.display = 'none';
-            errorMessage.style.display = 'none';
-        }
-
-        // Auto-focus on the file input for faster interaction
-        window.addEventListener('load', () => {
-            // Small delay to ensure everything is loaded
-            setTimeout(() => {
-                fileInput.focus();
-            }, 100);
-        });
-
-        // Prevent zoom on input focus (iOS Safari)
-        fileInput.addEventListener('focus', (e) => {
-            e.preventDefault();
-        });
     </script>
 </body>
 </html>
