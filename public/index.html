@@ -12,92 +12,87 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            text-align: center;
-            max-width: 400px;
+            max-width: 500px;
             width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
 
         h1 {
-            color: white;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.2em;
             font-weight: 700;
         }
 
-        .subtitle {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.1rem;
-            margin-bottom: 40px;
+        .input-section {
+            margin-bottom: 30px;
         }
 
         .camera-button {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
             width: 200px;
             height: 200px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            border: none;
-            color: white;
-            font-size: 4rem;
+            font-size: 3em;
             cursor: pointer;
-            margin: 20px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
         }
 
         .camera-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.4);
         }
 
         .gallery-button {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            border: none;
             border-radius: 15px;
             padding: 15px 30px;
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.1em;
             cursor: pointer;
-            margin: 20px 0;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            margin-top: 10px;
+            box-shadow: 0 5px 20px rgba(33, 150, 243, 0.3);
         }
 
         .gallery-button:hover {
-            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+        }
+
+        .hidden {
+            display: none;
         }
 
         .loading {
-            display: none;
-            color: white;
-            font-size: 1.2rem;
             margin: 20px 0;
         }
 
         .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
             border-radius: 50%;
-            border-top: 4px solid white;
             width: 40px;
             height: 40px;
             animation: spin 1s linear infinite;
@@ -109,87 +104,74 @@
             100% { transform: rotate(360deg); }
         }
 
-        .result {
-            display: none;
-            background: rgba(255, 255, 255, 0.2);
+        .result-section {
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 15px;
             padding: 20px;
             margin: 20px 0;
             text-align: left;
         }
 
-        .result h3 {
-            color: white;
-            margin-bottom: 15px;
-            text-align: center;
+        .result-field {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
         }
 
-        .data-field {
-            margin: 10px 0;
-            color: white;
-        }
-
-        .data-field strong {
-            color: #FFD700;
+        .result-field strong {
+            color: #333;
         }
 
         .action-buttons {
-            display: none;
-            margin: 20px 0;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         .action-button {
-            background: linear-gradient(45deg, #2196F3, #1976D2);
-            border: none;
-            border-radius: 12px;
-            padding: 12px 24px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
-            font-size: 1rem;
-            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 25px;
+            font-size: 1em;
             cursor: pointer;
-            margin: 5px;
             transition: all 0.3s ease;
         }
 
         .action-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
         }
 
-        .action-button.save {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
+        .secondary-button {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
         }
 
-        .action-button.back-side {
-            background: linear-gradient(45deg, #FF9800, #F57C00);
+        .secondary-button:hover {
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
         }
 
-        .error {
-            display: none;
-            background: rgba(244, 67, 54, 0.2);
-            border: 1px solid rgba(244, 67, 54, 0.5);
-            border-radius: 10px;
-            padding: 15px;
+        .success-message {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
+            padding: 15px;
+            border-radius: 10px;
             margin: 20px 0;
         }
 
-        .success {
-            display: none;
-            background: rgba(76, 175, 80, 0.2);
-            border: 1px solid rgba(76, 175, 80, 0.5);
-            border-radius: 10px;
-            padding: 15px;
+        .error-message {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
             color: white;
+            padding: 15px;
+            border-radius: 10px;
             margin: 20px 0;
         }
 
-        .hidden {
-            display: none !important;
-        }
-
-        /* Mobile responsiveness */
-        @media (max-width: 480px) {
+        @media (max-width: 600px) {
             .container {
                 padding: 20px;
             }
@@ -197,339 +179,282 @@
             .camera-button {
                 width: 150px;
                 height: 150px;
-                font-size: 3rem;
+                font-size: 2.5em;
             }
             
-            h1 {
-                font-size: 2rem;
+            .action-buttons {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📋 Business Card Scanner</h1>
-        <p class="subtitle">Capture and extract contact information instantly</p>
-
-        <!-- Main Action Buttons -->
-        <div id="mainActions">
-            <button class="camera-button" onclick="takePhoto()">📸</button>
-            <div style="color: rgba(255, 255, 255, 0.9); margin: 10px 0; font-weight: 600;">Take Photo</div>
-            <button class="gallery-button" onclick="selectFromGallery()">📁 From Gallery</button>
+        <h1>📱 Business Card Scanner</h1>
+        
+        <div id="inputSection" class="input-section">
+            <p style="margin-bottom: 20px; color: #666;">Capture or select a business card to extract contact information</p>
+            
+            <button id="cameraButton" class="camera-button">
+                📸
+            </button>
+            <br>
+            <button id="galleryButton" class="gallery-button">
+                📁 From Gallery
+            </button>
+            
+            <input type="file" id="cameraInput" accept="image/*" capture="camera" class="hidden">
+            <input type="file" id="galleryInput" accept="image/*" class="hidden">
         </div>
 
-        <!-- Hidden File Inputs -->
-        <input type="file" id="cameraInput" accept="image/*" capture="camera" style="display: none;" onchange="handleFileSelection(this.files[0], 'camera')">
-        <input type="file" id="galleryInput" accept="image/*" style="display: none;" onchange="handleFileSelection(this.files[0], 'gallery')">
-
-        <!-- Loading State -->
-        <div id="loading" class="loading">
+        <div id="loadingSection" class="loading hidden">
             <div class="spinner"></div>
-            <div>Processing your business card...</div>
+            <p id="loadingText">Processing your business card...</p>
         </div>
 
-        <!-- Results Display -->
-        <div id="result" class="result">
-            <h3>✅ Extracted Information</h3>
+        <div id="resultSection" class="result-section hidden">
+            <h3 style="margin-bottom: 15px; color: #333;">📋 Extracted Information</h3>
             <div id="extractedData"></div>
+            
+            <div class="action-buttons">
+                <button id="saveButton" class="action-button">
+                    ✅ Save to Sheet
+                </button>
+                <button id="backSideButton" class="action-button secondary-button">
+                    ➕ Add Back Side
+                </button>
+            </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div id="actionButtons" class="action-buttons">
-            <button class="action-button save" onclick="saveToSheet()">✅ Save to Sheet</button>
-            <button class="action-button back-side" onclick="addBackSide()">➕ Add Back Side</button>
+        <div id="messageSection"></div>
+
+        <div class="action-buttons" id="finalActions" style="display: none;">
+            <button id="newCardButton" class="action-button">
+                📄 Scan Another Card
+            </button>
         </div>
-
-        <!-- Status Messages -->
-        <div id="error" class="error"></div>
-        <div id="success" class="success"></div>
-
-        <!-- New Scan Button -->
-        <button id="newScanButton" class="gallery-button hidden" onclick="resetForNewScan()">📄 Scan Another Card</button>
     </div>
 
     <script>
-        let currentData = null;
-        let frontSideData = null;
+        let extractedData = null;
         let isProcessingBackSide = false;
 
-        // Main action functions
-        function takePhoto() {
-            console.log('Taking photo...');
-            document.getElementById('cameraInput').click();
+        // Debug logging
+        function log(message) {
+            console.log(`[BusinessCardScanner] ${message}`);
         }
 
-        function selectFromGallery() {
-            console.log('Selecting from gallery...');
-            document.getElementById('galleryInput').click();
-        }
+        // Elements
+        const cameraButton = document.getElementById('cameraButton');
+        const galleryButton = document.getElementById('galleryButton');
+        const cameraInput = document.getElementById('cameraInput');
+        const galleryInput = document.getElementById('galleryInput');
+        const inputSection = document.getElementById('inputSection');
+        const loadingSection = document.getElementById('loadingSection');
+        const resultSection = document.getElementById('resultSection');
+        const messageSection = document.getElementById('messageSection');
+        const finalActions = document.getElementById('finalActions');
+        const saveButton = document.getElementById('saveButton');
+        const backSideButton = document.getElementById('backSideButton');
+        const newCardButton = document.getElementById('newCardButton');
 
-        // Handle file selection
-        function handleFileSelection(file, source) {
-            console.log('File selected:', file?.name, 'from:', source);
-            
+        // Event listeners
+        cameraButton.addEventListener('click', () => {
+            log('Camera button clicked');
+            cameraInput.click();
+        });
+
+        galleryButton.addEventListener('click', () => {
+            log('Gallery button clicked');
+            galleryInput.click();
+        });
+
+        cameraInput.addEventListener('change', (e) => {
+            log('Camera input changed');
+            handleFileSelect(e.target.files[0], 'camera');
+        });
+
+        galleryInput.addEventListener('change', (e) => {
+            log('Gallery input changed');
+            handleFileSelect(e.target.files[0], 'gallery');
+        });
+
+        saveButton.addEventListener('click', saveToSheet);
+        backSideButton.addEventListener('click', addBackSide);
+        newCardButton.addEventListener('click', resetApp);
+
+        // File handling
+        function handleFileSelect(file, source) {
             if (!file) {
-                showError('No file selected');
+                log('No file selected');
                 return;
             }
 
-            // Validate file type
-            if (!file.type.startsWith('image/')) {
-                showError('Please select an image file');
-                return;
-            }
+            log(`File selected from ${source}: ${file.name}, size: ${file.size} bytes`);
 
-            // Validate file size (10MB limit)
             if (file.size > 10 * 1024 * 1024) {
-                showError('File size too large (max 10MB)');
+                showError('File too large. Please select an image under 10MB.');
                 return;
             }
 
-            console.log(`Processing ${file.name} (${file.size} bytes, ${file.type})`);
+            if (!file.type.startsWith('image/')) {
+                showError('Please select a valid image file.');
+                return;
+            }
+
             processImage(file);
         }
 
-        // Process the image
+        // Image processing
         async function processImage(file) {
+            log('Starting image processing');
+            
             showLoading();
-            hideError();
-            hideSuccess();
-            hideResults();
-
+            
             try {
-                console.log('Starting image processing...');
-                
                 const formData = new FormData();
-                formData.append('image', file);
+                formData.append('file', file);
 
-                console.log('Sending request to /api/upload...');
+                log('Sending request to /api/upload');
                 
                 const response = await fetch('/api/upload', {
                     method: 'POST',
                     body: formData
                 });
 
-                console.log('Response status:', response.status);
+                log(`Response status: ${response.status}`);
 
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('API Error:', errorText);
-                    throw new Error(`Server error: ${response.status}`);
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                const data = await response.json();
-                console.log('Received data:', data);
+                const result = await response.json();
+                log('Processing completed successfully');
 
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-
-                // Store the data
-                currentData = data;
-                
-                if (isProcessingBackSide && frontSideData) {
-                    // Combine front and back side data
-                    combineCardData(frontSideData, data);
+                if (result.success && result.data) {
+                    extractedData = result.data;
+                    showResults(result.data);
                 } else {
-                    displayResults(data);
+                    throw new Error(result.error || 'Processing failed');
                 }
 
             } catch (error) {
-                console.error('Processing error:', error);
-                showError(`Error processing image: ${error.message}`);
-            } finally {
-                hideLoading();
+                log(`Processing error: ${error.message}`);
+                showError(`Processing failed: ${error.message}`);
             }
         }
 
-        // Display extracted results
-        function displayResults(data) {
-            const extractedDataDiv = document.getElementById('extractedData');
-            extractedDataDiv.innerHTML = '';
+        // UI functions
+        function showLoading() {
+            inputSection.classList.add('hidden');
+            resultSection.classList.add('hidden');
+            loadingSection.classList.remove('hidden');
+            clearMessages();
+        }
 
-            // Create data display
+        function showResults(data) {
+            loadingSection.classList.add('hidden');
+            resultSection.classList.remove('hidden');
+            
+            const dataContainer = document.getElementById('extractedData');
+            dataContainer.innerHTML = '';
+
             const fields = [
-                { key: 'full_name', label: 'Full Name' },
-                { key: 'first_name', label: 'First Name' },
-                { key: 'last_name', label: 'Last Name' },
+                { key: 'full_name', label: 'Name' },
+                { key: 'position', label: 'Position' },
+                { key: 'company_name', label: 'Company' },
                 { key: 'email', label: 'Email' },
                 { key: 'handphone_number', label: 'Phone' },
-                { key: 'company_name', label: 'Company' },
-                { key: 'position', label: 'Position' },
                 { key: 'address', label: 'Address' },
-                { key: 'city', label: 'City' },
-                { key: 'country', label: 'Country' },
                 { key: 'website', label: 'Website' },
-                { key: 'social_media', label: 'Social Media' },
-                { key: 'company_description', label: 'Company Description' }
+                { key: 'city', label: 'City' },
+                { key: 'country', label: 'Country' }
             ];
 
             fields.forEach(field => {
-                if (data[field.key] && data[field.key].trim()) {
+                if (data[field.key] && data[field.key] !== null) {
                     const fieldDiv = document.createElement('div');
-                    fieldDiv.className = 'data-field';
+                    fieldDiv.className = 'result-field';
                     fieldDiv.innerHTML = `<strong>${field.label}:</strong> ${data[field.key]}`;
-                    extractedDataDiv.appendChild(fieldDiv);
+                    dataContainer.appendChild(fieldDiv);
                 }
             });
-
-            showResults();
         }
 
-        // Save to Google Sheet
+        function showError(message) {
+            loadingSection.classList.add('hidden');
+            inputSection.classList.remove('hidden');
+            
+            messageSection.innerHTML = `
+                <div class="error-message">
+                    ❌ ${message}
+                </div>
+            `;
+        }
+
+        function showSuccess(message) {
+            messageSection.innerHTML = `
+                <div class="success-message">
+                    ✅ ${message}
+                </div>
+            `;
+            
+            finalActions.style.display = 'flex';
+        }
+
+        function clearMessages() {
+            messageSection.innerHTML = '';
+        }
+
+        // Action functions
         async function saveToSheet() {
-            if (!currentData) {
+            if (!extractedData) {
                 showError('No data to save');
                 return;
             }
 
-            showLoading('Saving to Google Sheet...');
-
-            try {
-                // The data is already sent to Make.com webhook during processing
-                // Show success message
-                showSuccess('✅ Successfully saved to Google Sheet!');
-                showNewScanButton();
-                hideActionButtons();
-                
-            } catch (error) {
-                console.error('Save error:', error);
-                showError(`Error saving to sheet: ${error.message}`);
-            } finally {
-                hideLoading();
-            }
+            log('Saving to sheet');
+            showSuccess('Business card saved successfully! 🎉');
+            
+            resultSection.classList.add('hidden');
         }
 
-        // Add back side of card
         function addBackSide() {
-            frontSideData = currentData;
+            log('Adding back side');
             isProcessingBackSide = true;
             
-            hideResults();
-            hideActionButtons();
-            showMainActions();
+            resultSection.classList.add('hidden');
+            inputSection.classList.remove('hidden');
+            clearMessages();
             
-            showSuccess('Now capture the back side of the business card');
+            // Update UI text for back side
+            document.querySelector('.container p').textContent = 'Now capture the back side of the business card';
         }
 
-        // Combine front and back side data
-        function combineCardData(frontData, backData) {
-            // Merge the data (back side data takes precedence for non-empty fields)
-            const combinedData = { ...frontData };
+        function resetApp() {
+            log('Resetting app');
             
-            Object.keys(backData).forEach(key => {
-                if (backData[key] && backData[key].trim()) {
-                    if (combinedData[key]) {
-                        // If both sides have data, combine them
-                        combinedData[key] += ` | ${backData[key]}`;
-                    } else {
-                        combinedData[key] = backData[key];
-                    }
-                }
-            });
-
-            currentData = combinedData;
-            isProcessingBackSide = false;
-            frontSideData = null;
-            
-            displayResults(combinedData);
-            
-            // Auto-save combined data
-            saveToSheet();
-        }
-
-        // Reset for new scan
-        function resetForNewScan() {
-            currentData = null;
-            frontSideData = null;
+            extractedData = null;
             isProcessingBackSide = false;
             
-            hideResults();
-            hideActionButtons();
-            hideError();
-            hideSuccess();
-            hideNewScanButton();
-            showMainActions();
-        }
-
-        // UI Helper Functions
-        function showLoading(message = 'Processing your business card...') {
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('loading').querySelector('div:last-child').textContent = message;
-            hideMainActions();
-        }
-
-        function hideLoading() {
-            document.getElementById('loading').style.display = 'none';
-        }
-
-        function showResults() {
-            document.getElementById('result').style.display = 'block';
-            document.getElementById('actionButtons').style.display = 'block';
-        }
-
-        function hideResults() {
-            document.getElementById('result').style.display = 'none';
-        }
-
-        function showActionButtons() {
-            document.getElementById('actionButtons').style.display = 'block';
-        }
-
-        function hideActionButtons() {
-            document.getElementById('actionButtons').style.display = 'none';
-        }
-
-        function showMainActions() {
-            document.getElementById('mainActions').style.display = 'block';
-        }
-
-        function hideMainActions() {
-            document.getElementById('mainActions').style.display = 'none';
-        }
-
-        function showError(message) {
-            const errorDiv = document.getElementById('error');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-        }
-
-        function hideError() {
-            document.getElementById('error').style.display = 'none';
-        }
-
-        function showSuccess(message) {
-            const successDiv = document.getElementById('success');
-            successDiv.textContent = message;
-            successDiv.style.display = 'block';
-        }
-
-        function hideSuccess() {
-            document.getElementById('success').style.display = 'none';
-        }
-
-        function showNewScanButton() {
-            document.getElementById('newScanButton').classList.remove('hidden');
-        }
-
-        function hideNewScanButton() {
-            document.getElementById('newScanButton').classList.add('hidden');
+            // Reset UI
+            inputSection.classList.remove('hidden');
+            resultSection.classList.add('hidden');
+            loadingSection.classList.add('hidden');
+            finalActions.style.display = 'none';
+            
+            // Reset file inputs
+            cameraInput.value = '';
+            galleryInput.value = '';
+            
+            // Reset UI text
+            document.querySelector('.container p').textContent = 'Capture or select a business card to extract contact information';
+            
+            clearMessages();
         }
 
         // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Business Card Scanner loaded successfully');
-            console.log('User agent:', navigator.userAgent);
-            
-            // Test basic functionality
-            if (typeof FormData === 'undefined') {
-                showError('Your browser does not support file uploads');
-            }
-            
-            if (typeof fetch === 'undefined') {
-                showError('Your browser does not support modern web features');
-            }
-        });
+        log('Business Card Scanner initialized');
     </script>
 </body>
 </html>
