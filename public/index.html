@@ -12,7 +12,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -23,122 +23,81 @@
 
         .container {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
             border-radius: 20px;
-            padding: 40px 20px;
-            text-align: center;
+            padding: 40px;
             box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
             border: 1px solid rgba(255, 255, 255, 0.18);
+            text-align: center;
             max-width: 400px;
             width: 100%;
         }
 
         h1 {
             color: white;
-            font-size: 28px;
+            font-size: 2.5rem;
             margin-bottom: 10px;
             font-weight: 700;
         }
 
         .subtitle {
             color: rgba(255, 255, 255, 0.8);
-            font-size: 16px;
+            font-size: 1.1rem;
             margin-bottom: 40px;
-        }
-
-        /* Camera Button Styles */
-        .camera-section {
-            margin-bottom: 30px;
         }
 
         .camera-button {
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            background: linear-gradient(145deg, #4CAF50, #45a049);
+            background: linear-gradient(45deg, #4CAF50, #45a049);
             border: none;
+            color: white;
+            font-size: 4rem;
             cursor: pointer;
-            position: relative;
-            margin: 0 auto 20px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
+            margin: 20px auto;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .camera-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
         }
 
-        .camera-button:active {
-            transform: scale(0.95);
-        }
-
-        .camera-icon {
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 12px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .camera-icon::before {
-            content: "📷";
-            font-size: 40px;
-        }
-
-        .camera-options {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 15px;
-        }
-
-        .option-button {
-            padding: 12px 20px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .option-button:hover {
+        .gallery-button {
             background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        .option-button.primary {
-            background: linear-gradient(145deg, #4CAF50, #45a049);
-            border-color: #4CAF50;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 15px 30px;
+            color: white;
+            font-size: 1.1rem;
             font-weight: 600;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
-        /* File Input Styles */
-        .file-input {
-            display: none;
+        .gallery-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
 
-        /* Loading State */
         .loading {
             display: none;
             color: white;
-            font-size: 18px;
+            font-size: 1.2rem;
+            margin: 20px 0;
         }
 
-        .loading-spinner {
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid white;
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
+            border-top: 4px solid white;
             width: 40px;
             height: 40px;
             animation: spin 1s linear infinite;
@@ -150,575 +109,427 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Data Preview Styles */
-        .data-preview {
+        .result {
             display: none;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 15px;
             padding: 20px;
             margin: 20px 0;
             text-align: left;
         }
 
-        .data-preview h3 {
+        .result h3 {
             color: white;
             margin-bottom: 15px;
             text-align: center;
         }
 
         .data-field {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            padding: 5px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .data-field:last-child {
-            border-bottom: none;
-        }
-
-        .field-label {
-            color: rgba(255, 255, 255, 0.8);
-            font-weight: 500;
-            min-width: 100px;
-        }
-
-        .field-value {
+            margin: 10px 0;
             color: white;
-            text-align: right;
-            word-break: break-word;
         }
 
-        /* Action Buttons */
+        .data-field strong {
+            color: #FFD700;
+        }
+
         .action-buttons {
             display: none;
-            gap: 10px;
-            margin-top: 20px;
+            margin: 20px 0;
         }
 
         .action-button {
-            flex: 1;
-            padding: 12px;
+            background: linear-gradient(45deg, #2196F3, #1976D2);
             border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 14px;
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: white;
+            font-size: 1rem;
             font-weight: 600;
+            cursor: pointer;
+            margin: 5px;
             transition: all 0.3s ease;
         }
 
-        .confirm-btn {
-            background: linear-gradient(145deg, #4CAF50, #45a049);
-            color: white;
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
-        .add-back-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+        .action-button.save {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
         }
 
-        .add-back-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        /* Success/Error States */
-        .result-message {
-            display: none;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            font-weight: 500;
-        }
-
-        .success {
-            background: rgba(76, 175, 80, 0.2);
-            color: #4CAF50;
-            border: 1px solid rgba(76, 175, 80, 0.3);
+        .action-button.back-side {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
         }
 
         .error {
+            display: none;
             background: rgba(244, 67, 54, 0.2);
-            color: #f44336;
-            border: 1px solid rgba(244, 67, 54, 0.3);
-        }
-
-        /* Back Side Indicator */
-        .back-side-indicator {
-            display: none;
-            background: rgba(255, 193, 7, 0.2);
-            color: #FFC107;
-            padding: 10px;
+            border: 1px solid rgba(244, 67, 54, 0.5);
             border-radius: 10px;
-            margin: 10px 0;
-            font-size: 14px;
-        }
-
-        /* Debug Info */
-        .debug-info {
-            display: none;
-            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
             color: white;
-            padding: 10px;
-            border-radius: 10px;
-            margin: 10px 0;
-            font-size: 12px;
-            text-align: left;
-            font-family: monospace;
-            max-height: 200px;
-            overflow-y: auto;
+            margin: 20px 0;
         }
 
-        /* Responsive Design */
+        .success {
+            display: none;
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Mobile responsiveness */
         @media (max-width: 480px) {
             .container {
-                padding: 30px 15px;
+                padding: 20px;
             }
             
             .camera-button {
-                width: 180px;
-                height: 180px;
+                width: 150px;
+                height: 150px;
+                font-size: 3rem;
             }
             
-            .camera-icon {
-                width: 70px;
-                height: 70px;
-            }
-            
-            .camera-icon::before {
-                font-size: 35px;
+            h1 {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Business Card Scanner</h1>
+        <h1>📋 Business Card Scanner</h1>
         <p class="subtitle">Capture and extract contact information instantly</p>
 
-        <!-- Initial Camera Section -->
-        <div class="camera-section" id="cameraSection">
-            <div class="camera-button" onclick="takePhoto()">
-                <div class="camera-icon"></div>
-            </div>
-            
-            <div class="camera-options">
-                <label for="cameraInput" class="option-button primary">
-                    📸 Take Photo
-                </label>
-                <label for="galleryInput" class="option-button">
-                    📁 From Gallery
-                </label>
-            </div>
+        <!-- Main Action Buttons -->
+        <div id="mainActions">
+            <button class="camera-button" onclick="takePhoto()">📸</button>
+            <div style="color: rgba(255, 255, 255, 0.9); margin: 10px 0; font-weight: 600;">Take Photo</div>
+            <button class="gallery-button" onclick="selectFromGallery()">📁 From Gallery</button>
         </div>
 
-        <!-- File Inputs -->
-        <input type="file" id="cameraInput" class="file-input" accept="image/*" capture="camera">
-        <input type="file" id="galleryInput" class="file-input" accept="image/*">
-        <input type="file" id="backSideInput" class="file-input" accept="image/*">
+        <!-- Hidden File Inputs -->
+        <input type="file" id="cameraInput" accept="image/*" capture="camera" style="display: none;" onchange="handleFileSelection(this.files[0], 'camera')">
+        <input type="file" id="galleryInput" accept="image/*" style="display: none;" onchange="handleFileSelection(this.files[0], 'gallery')">
 
         <!-- Loading State -->
-        <div class="loading" id="loadingState">
-            <div class="loading-spinner"></div>
-            <p>Processing business card...</p>
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <div>Processing your business card...</div>
         </div>
 
-        <!-- Debug Info -->
-        <div class="debug-info" id="debugInfo"></div>
-
-        <!-- Back Side Indicator -->
-        <div class="back-side-indicator" id="backSideIndicator">
-            📄 Processing back side of business card
-        </div>
-
-        <!-- Data Preview -->
-        <div class="data-preview" id="dataPreview">
-            <h3>📋 Extracted Information</h3>
+        <!-- Results Display -->
+        <div id="result" class="result">
+            <h3>✅ Extracted Information</h3>
             <div id="extractedData"></div>
         </div>
 
         <!-- Action Buttons -->
-        <div class="action-buttons" id="actionButtons">
-            <button class="action-button confirm-btn" onclick="confirmAndSave()">
-                ✅ Save to Sheet
-            </button>
-            <button class="action-button add-back-btn" onclick="addBackSide()">
-                ➕ Add Back Side
-            </button>
+        <div id="actionButtons" class="action-buttons">
+            <button class="action-button save" onclick="saveToSheet()">✅ Save to Sheet</button>
+            <button class="action-button back-side" onclick="addBackSide()">➕ Add Back Side</button>
         </div>
 
-        <!-- Result Messages -->
-        <div class="result-message" id="resultMessage"></div>
+        <!-- Status Messages -->
+        <div id="error" class="error"></div>
+        <div id="success" class="success"></div>
+
+        <!-- New Scan Button -->
+        <button id="newScanButton" class="gallery-button hidden" onclick="resetForNewScan()">📄 Scan Another Card</button>
     </div>
 
     <script>
-        let currentFrontData = null;
-        let currentBackData = null;
-        let processingMode = 'single';
-        let debugMode = true; // Enable debug logging
+        let currentData = null;
+        let frontSideData = null;
+        let isProcessingBackSide = false;
 
-        // Debug logging function
-        function debugLog(message, data = null) {
-            if (debugMode) {
-                console.log('[DEBUG]', message, data);
-                const debugDiv = document.getElementById('debugInfo');
-                const timestamp = new Date().toLocaleTimeString();
-                debugDiv.innerHTML += `<div>${timestamp}: ${message}</div>`;
-                if (data) {
-                    debugDiv.innerHTML += `<div style="margin-left: 20px; color: #ccc;">${JSON.stringify(data, null, 2)}</div>`;
-                }
-                debugDiv.style.display = 'block';
-                debugDiv.scrollTop = debugDiv.scrollHeight;
-            }
-        }
-
-        // Initialize event listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            debugLog('DOM loaded, setting up event listeners');
-            
-            document.getElementById('cameraInput').addEventListener('change', handleImageUpload);
-            document.getElementById('galleryInput').addEventListener('change', handleImageUpload);
-            document.getElementById('backSideInput').addEventListener('change', handleBackSideUpload);
-            
-            debugLog('Event listeners attached');
-        });
-
+        // Main action functions
         function takePhoto() {
-            debugLog('Take photo button clicked');
+            console.log('Taking photo...');
             document.getElementById('cameraInput').click();
         }
 
-        function handleImageUpload(event) {
-            debugLog('Image upload triggered');
-            const file = event.target.files[0];
+        function selectFromGallery() {
+            console.log('Selecting from gallery...');
+            document.getElementById('galleryInput').click();
+        }
+
+        // Handle file selection
+        function handleFileSelection(file, source) {
+            console.log('File selected:', file?.name, 'from:', source);
             
             if (!file) {
-                debugLog('No file selected');
+                showError('No file selected');
                 return;
             }
-            
-            debugLog('File selected', {
-                name: file.name,
-                size: file.size,
-                type: file.type
-            });
-            
+
             // Validate file type
             if (!file.type.startsWith('image/')) {
-                showError('Please select a valid image file');
+                showError('Please select an image file');
                 return;
             }
-            
-            // Check file size (max 10MB)
+
+            // Validate file size (10MB limit)
             if (file.size > 10 * 1024 * 1024) {
-                showError('Image file is too large. Please select an image smaller than 10MB.');
+                showError('File size too large (max 10MB)');
                 return;
             }
-            
-            showLoading('Processing business card...');
-            processingMode = 'single';
-            
-            // Process image with compression
-            processImageFile(file, 'front');
+
+            console.log(`Processing ${file.name} (${file.size} bytes, ${file.type})`);
+            processImage(file);
         }
 
-        function handleBackSideUpload(event) {
-            debugLog('Back side upload triggered');
-            const file = event.target.files[0];
-            
-            if (!file) {
-                debugLog('No back side file selected');
-                return;
-            }
-            
-            debugLog('Back side file selected', {
-                name: file.name,
-                size: file.size,
-                type: file.type
-            });
-            
-            showLoading('Processing back side...');
-            document.getElementById('backSideIndicator').style.display = 'block';
-            processingMode = 'double';
-            
-            processImageFile(file, 'back');
-        }
+        // Process the image
+        async function processImage(file) {
+            showLoading();
+            hideError();
+            hideSuccess();
+            hideResults();
 
-        function processImageFile(file, side = 'front') {
-            debugLog(`Processing ${side} image`);
-            
-            // Create canvas for image compression
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
-            
-            img.onload = function() {
-                debugLog('Image loaded for processing', {
-                    originalWidth: img.width,
-                    originalHeight: img.height
+            try {
+                console.log('Starting image processing...');
+                
+                const formData = new FormData();
+                formData.append('image', file);
+
+                console.log('Sending request to /api/upload...');
+                
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
                 });
-                
-                // Calculate new dimensions (max 1200px on longest side)
-                const maxSize = 1200;
-                let { width, height } = img;
-                
-                if (width > height) {
-                    if (width > maxSize) {
-                        height = (height * maxSize) / width;
-                        width = maxSize;
-                    }
-                } else {
-                    if (height > maxSize) {
-                        width = (width * maxSize) / height;
-                        height = maxSize;
-                    }
-                }
-                
-                // Set canvas size
-                canvas.width = width;
-                canvas.height = height;
-                
-                // Draw and compress image
-                ctx.drawImage(img, 0, 0, width, height);
-                
-                canvas.toBlob(function(compressedBlob) {
-                    debugLog('Image compressed', {
-                        newWidth: width,
-                        newHeight: height,
-                        originalSize: file.size,
-                        compressedSize: compressedBlob.size
-                    });
-                    
-                    uploadImage(compressedBlob, side);
-                }, 'image/jpeg', 0.8);
-            };
-            
-            img.onerror = function() {
-                debugLog('Image loading failed');
-                hideLoading();
-                showError('Failed to process image. Please try a different image.');
-            };
-            
-            img.src = URL.createObjectURL(file);
-        }
 
-        function uploadImage(imageBlob, side = 'front') {
-            debugLog(`Uploading ${side} image`, {
-                size: imageBlob.size,
-                type: imageBlob.type
-            });
-            
-            const formData = new FormData();
-            
-            if (side === 'front') {
-                formData.append('image', imageBlob, 'front.jpg');
-                formData.append('processing_mode', processingMode);
-            } else {
-                // For back side, send both images
-                if (!currentFrontData || !currentFrontData.imageBlob) {
-                    debugLog('ERROR: No front data available for back side processing');
-                    showError('Error: Front side data not found. Please restart.');
-                    return;
-                }
-                formData.append('image', currentFrontData.imageBlob, 'front.jpg');
-                formData.append('back_image', imageBlob, 'back.jpg');
-                formData.append('processing_mode', 'double');
-            }
-            
-            debugLog('Sending request to /api/upload');
-            
-            fetch('/api/upload', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                debugLog('Response received', {
-                    status: response.status,
-                    statusText: response.statusText,
-                    ok: response.ok
-                });
-                
+                console.log('Response status:', response.status);
+
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    const errorText = await response.text();
+                    console.error('API Error:', errorText);
+                    throw new Error(`Server error: ${response.status}`);
                 }
+
+                const data = await response.json();
+                console.log('Received data:', data);
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Store the data
+                currentData = data;
                 
-                return response.json();
-            })
-            .then(data => {
-                debugLog('Response data received', data);
-                hideLoading();
-                
-                if (data.success) {
-                    if (side === 'front') {
-                        // Store front data and image for potential back side processing
-                        currentFrontData = {
-                            ...data.extracted_data,
-                            imageBlob: imageBlob
-                        };
-                        debugLog('Front data stored');
-                        showDataPreview(data.extracted_data, false);
-                    } else {
-                        // Back side processed - show combined data
-                        document.getElementById('backSideIndicator').style.display = 'none';
-                        showDataPreview(data.extracted_data, true);
-                        showSuccessMessage('Both sides processed successfully! Data saved to Google Sheets.');
-                    }
+                if (isProcessingBackSide && frontSideData) {
+                    // Combine front and back side data
+                    combineCardData(frontSideData, data);
                 } else {
-                    debugLog('Processing failed', data.message);
-                    showError(data.message || 'Processing failed');
+                    displayResults(data);
                 }
-            })
-            .catch(error => {
-                debugLog('Request failed', {
-                    error: error.message,
-                    stack: error.stack
-                });
+
+            } catch (error) {
+                console.error('Processing error:', error);
+                showError(`Error processing image: ${error.message}`);
+            } finally {
                 hideLoading();
-                document.getElementById('backSideIndicator').style.display = 'none';
-                showError(`Processing failed: ${error.message}`);
-            });
+            }
         }
 
-        function showDataPreview(data, isComplete = false) {
-            debugLog('Showing data preview', { data, isComplete });
-            
-            const preview = document.getElementById('dataPreview');
+        // Display extracted results
+        function displayResults(data) {
             const extractedDataDiv = document.getElementById('extractedData');
-            const actionButtons = document.getElementById('actionButtons');
-            
-            // Hide camera section
-            document.getElementById('cameraSection').style.display = 'none';
-            
-            // Build data display
-            let html = '';
-            const fields = {
-                'full_name': 'Name',
-                'company_name': 'Company',
-                'position': 'Position',
-                'email': 'Email',
-                'handphone_number': 'Phone',
-                'address': 'Address',
-                'city': 'City',
-                'country': 'Country',
-                'website': 'Website',
-                'social_media': 'Social Media',
-                'company_description': 'Description'
-            };
-            
-            for (const [key, label] of Object.entries(fields)) {
-                const value = data[key] || '';
-                if (value && value.trim() !== '') {
-                    html += `
-                        <div class="data-field">
-                            <span class="field-label">${label}:</span>
-                            <span class="field-value">${value}</span>
-                        </div>
-                    `;
+            extractedDataDiv.innerHTML = '';
+
+            // Create data display
+            const fields = [
+                { key: 'full_name', label: 'Full Name' },
+                { key: 'first_name', label: 'First Name' },
+                { key: 'last_name', label: 'Last Name' },
+                { key: 'email', label: 'Email' },
+                { key: 'handphone_number', label: 'Phone' },
+                { key: 'company_name', label: 'Company' },
+                { key: 'position', label: 'Position' },
+                { key: 'address', label: 'Address' },
+                { key: 'city', label: 'City' },
+                { key: 'country', label: 'Country' },
+                { key: 'website', label: 'Website' },
+                { key: 'social_media', label: 'Social Media' },
+                { key: 'company_description', label: 'Company Description' }
+            ];
+
+            fields.forEach(field => {
+                if (data[field.key] && data[field.key].trim()) {
+                    const fieldDiv = document.createElement('div');
+                    fieldDiv.className = 'data-field';
+                    fieldDiv.innerHTML = `<strong>${field.label}:</strong> ${data[field.key]}`;
+                    extractedDataDiv.appendChild(fieldDiv);
                 }
-            }
-            
-            if (html === '') {
-                html = '<div class="data-field"><span class="field-value">No data extracted from the image</span></div>';
-            }
-            
-            extractedDataDiv.innerHTML = html;
-            preview.style.display = 'block';
-            
-            if (isComplete) {
-                // Both sides processed - hide action buttons
-                actionButtons.style.display = 'none';
-            } else {
-                // Show action buttons for single side
-                actionButtons.style.display = 'flex';
-            }
+            });
+
+            showResults();
         }
 
-        function confirmAndSave() {
-            debugLog('Confirm and save clicked');
-            showLoading('Saving to Google Sheets...');
-            
-            // The data is already sent to webhook during processing
-            setTimeout(() => {
+        // Save to Google Sheet
+        async function saveToSheet() {
+            if (!currentData) {
+                showError('No data to save');
+                return;
+            }
+
+            showLoading('Saving to Google Sheet...');
+
+            try {
+                // The data is already sent to Make.com webhook during processing
+                // Show success message
+                showSuccess('✅ Successfully saved to Google Sheet!');
+                showNewScanButton();
+                hideActionButtons();
+                
+            } catch (error) {
+                console.error('Save error:', error);
+                showError(`Error saving to sheet: ${error.message}`);
+            } finally {
                 hideLoading();
-                showSuccessMessage('Business card saved to Google Sheets successfully!');
-                document.getElementById('actionButtons').style.display = 'none';
-            }, 1000);
+            }
         }
 
+        // Add back side of card
         function addBackSide() {
-            debugLog('Add back side clicked');
-            document.getElementById('actionButtons').style.display = 'none';
-            document.getElementById('backSideInput').click();
+            frontSideData = currentData;
+            isProcessingBackSide = true;
+            
+            hideResults();
+            hideActionButtons();
+            showMainActions();
+            
+            showSuccess('Now capture the back side of the business card');
         }
 
-        function showLoading(message) {
-            debugLog('Showing loading state', message);
-            document.getElementById('loadingState').style.display = 'block';
-            document.getElementById('loadingState').querySelector('p').textContent = message;
-            document.getElementById('dataPreview').style.display = 'none';
-            document.getElementById('actionButtons').style.display = 'none';
-            document.getElementById('resultMessage').style.display = 'none';
+        // Combine front and back side data
+        function combineCardData(frontData, backData) {
+            // Merge the data (back side data takes precedence for non-empty fields)
+            const combinedData = { ...frontData };
+            
+            Object.keys(backData).forEach(key => {
+                if (backData[key] && backData[key].trim()) {
+                    if (combinedData[key]) {
+                        // If both sides have data, combine them
+                        combinedData[key] += ` | ${backData[key]}`;
+                    } else {
+                        combinedData[key] = backData[key];
+                    }
+                }
+            });
+
+            currentData = combinedData;
+            isProcessingBackSide = false;
+            frontSideData = null;
+            
+            displayResults(combinedData);
+            
+            // Auto-save combined data
+            saveToSheet();
+        }
+
+        // Reset for new scan
+        function resetForNewScan() {
+            currentData = null;
+            frontSideData = null;
+            isProcessingBackSide = false;
+            
+            hideResults();
+            hideActionButtons();
+            hideError();
+            hideSuccess();
+            hideNewScanButton();
+            showMainActions();
+        }
+
+        // UI Helper Functions
+        function showLoading(message = 'Processing your business card...') {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('loading').querySelector('div:last-child').textContent = message;
+            hideMainActions();
         }
 
         function hideLoading() {
-            debugLog('Hiding loading state');
-            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
         }
 
-        function showSuccessMessage(message) {
-            debugLog('Showing success message', message);
-            const resultDiv = document.getElementById('resultMessage');
-            resultDiv.textContent = message;
-            resultDiv.className = 'result-message success';
-            resultDiv.style.display = 'block';
-            
-            // Add restart button
-            setTimeout(() => {
-                resultDiv.innerHTML = message + '<br><button onclick="restart()" style="margin-top:10px; padding:8px 16px; background:white; color:#4CAF50; border:none; border-radius:20px; cursor:pointer;">📄 Scan Another Card</button>';
-            }, 1000);
+        function showResults() {
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('actionButtons').style.display = 'block';
+        }
+
+        function hideResults() {
+            document.getElementById('result').style.display = 'none';
+        }
+
+        function showActionButtons() {
+            document.getElementById('actionButtons').style.display = 'block';
+        }
+
+        function hideActionButtons() {
+            document.getElementById('actionButtons').style.display = 'none';
+        }
+
+        function showMainActions() {
+            document.getElementById('mainActions').style.display = 'block';
+        }
+
+        function hideMainActions() {
+            document.getElementById('mainActions').style.display = 'none';
         }
 
         function showError(message) {
-            debugLog('Showing error message', message);
-            const resultDiv = document.getElementById('resultMessage');
-            resultDiv.textContent = message;
-            resultDiv.className = 'result-message error';
-            resultDiv.style.display = 'block';
-            
-            // Add retry button
-            setTimeout(() => {
-                resultDiv.innerHTML = message + '<br><button onclick="restart()" style="margin-top:10px; padding:8px 16px; background:white; color:#f44336; border:none; border-radius:20px; cursor:pointer;">🔄 Try Again</button>';
-            }, 1000);
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
         }
 
-        function restart() {
-            debugLog('Restarting application');
-            
-            // Reset all states
-            currentFrontData = null;
-            currentBackData = null;
-            processingMode = 'single';
-            
-            // Clear file inputs
-            document.getElementById('cameraInput').value = '';
-            document.getElementById('galleryInput').value = '';
-            document.getElementById('backSideInput').value = '';
-            
-            // Reset UI
-            document.getElementById('cameraSection').style.display = 'block';
-            document.getElementById('dataPreview').style.display = 'none';
-            document.getElementById('actionButtons').style.display = 'none';
-            document.getElementById('resultMessage').style.display = 'none';
-            document.getElementById('backSideIndicator').style.display = 'none';
-            document.getElementById('loadingState').style.display = 'none';
-            
-            // Clear debug info
-            document.getElementById('debugInfo').innerHTML = '';
-            document.getElementById('debugInfo').style.display = 'none';
-            
-            debugLog('Application restarted');
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
         }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+
+        function hideSuccess() {
+            document.getElementById('success').style.display = 'none';
+        }
+
+        function showNewScanButton() {
+            document.getElementById('newScanButton').classList.remove('hidden');
+        }
+
+        function hideNewScanButton() {
+            document.getElementById('newScanButton').classList.add('hidden');
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Business Card Scanner loaded successfully');
+            console.log('User agent:', navigator.userAgent);
+            
+            // Test basic functionality
+            if (typeof FormData === 'undefined') {
+                showError('Your browser does not support file uploads');
+            }
+            
+            if (typeof fetch === 'undefined') {
+                showError('Your browser does not support modern web features');
+            }
+        });
     </script>
 </body>
 </html>
