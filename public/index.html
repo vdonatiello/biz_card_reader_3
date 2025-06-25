@@ -255,6 +255,21 @@
             font-size: 14px;
         }
 
+        /* Debug Info */
+        .debug-info {
+            display: none;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 12px;
+            text-align: left;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
         /* Responsive Design */
         @media (max-width: 480px) {
             .container {
@@ -309,6 +324,9 @@
             <p>Processing business card...</p>
         </div>
 
+        <!-- Debug Info -->
+        <div class="debug-info" id="debugInfo"></div>
+
         <!-- Back Side Indicator -->
         <div class="back-side-indicator" id="backSideIndicator">
             📄 Processing back side of business card
@@ -338,63 +356,197 @@
         let currentFrontData = null;
         let currentBackData = null;
         let processingMode = 'single';
+        let debugMode = true; // Enable debug logging
+
+        // Debug logging function
+        function debugLog(message, data = null) {
+            if (debugMode) {
+                console.log('[DEBUG]', message, data);
+                const debugDiv = document.getElementById('debugInfo');
+                const timestamp = new Date().toLocaleTimeString();
+                debugDiv.innerHTML += `<div>${timestamp}: ${message}</div>`;
+                if (data) {
+                    debugDiv.innerHTML += `<div style="margin-left: 20px; color: #ccc;">${JSON.stringify(data, null, 2)}</div>`;
+                }
+                debugDiv.style.display = 'block';
+                debugDiv.scrollTop = debugDiv.scrollHeight;
+            }
+        }
 
         // Initialize event listeners
-        document.getElementById('cameraInput').addEventListener('change', handleImageUpload);
-        document.getElementById('galleryInput').addEventListener('change', handleImageUpload);
-        document.getElementById('backSideInput').addEventListener('change', handleBackSideUpload);
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog('DOM loaded, setting up event listeners');
+            
+            document.getElementById('cameraInput').addEventListener('change', handleImageUpload);
+            document.getElementById('galleryInput').addEventListener('change', handleImageUpload);
+            document.getElementById('backSideInput').addEventListener('change', handleBackSideUpload);
+            
+            debugLog('Event listeners attached');
+        });
 
         function takePhoto() {
+            debugLog('Take photo button clicked');
             document.getElementById('cameraInput').click();
         }
 
         function handleImageUpload(event) {
+            debugLog('Image upload triggered');
             const file = event.target.files[0];
-            if (file) {
-                console.log('Image selected:', file.name, file.size, 'bytes');
-                showLoading('Processing business card...');
-                processingMode = 'single';
-                uploadImage(file, 'front');
+            
+            if (!file) {
+                debugLog('No file selected');
+                return;
             }
+            
+            debugLog('File selected', {
+                name: file.name,
+                size: file.size,
+                type: file.type
+            });
+            
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showError('Please select a valid image file');
+                return;
+            }
+            
+            // Check file size (max 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                showError('Image file is too large. Please select an image smaller than 10MB.');
+                return;
+            }
+            
+            showLoading('Processing business card...');
+            processingMode = 'single';
+            
+            // Process image with compression
+            processImageFile(file, 'front');
         }
 
         function handleBackSideUpload(event) {
+            debugLog('Back side upload triggered');
             const file = event.target.files[0];
-            if (file) {
-                console.log('Back side image selected:', file.name);
-                showLoading('Processing back side...');
-                document.getElementById('backSideIndicator').style.display = 'block';
-                processingMode = 'double';
-                uploadImage(file, 'back');
+            
+            if (!file) {
+                debugLog('No back side file selected');
+                return;
             }
+            
+            debugLog('Back side file selected', {
+                name: file.name,
+                size: file.size,
+                type: file.type
+            });
+            
+            showLoading('Processing back side...');
+            document.getElementById('backSideIndicator').style.display = 'block';
+            processingMode = 'double';
+            
+            processImageFile(file, 'back');
         }
 
-        function uploadImage(file, side = 'front') {
+        function processImageFile(file, side = 'front') {
+            debugLog(`Processing ${side} image`);
+            
+            // Create canvas for image compression
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.onload = function() {
+                debugLog('Image loaded for processing', {
+                    originalWidth: img.width,
+                    originalHeight: img.height
+                });
+                
+                // Calculate new dimensions (max 1200px on longest side)
+                const maxSize = 1200;
+                let { width, height } = img;
+                
+                if (width > height) {
+                    if (width > maxSize) {
+                        height = (height * maxSize) / width;
+                        width = maxSize;
+                    }
+                } else {
+                    if (height > maxSize) {
+                        width = (width * maxSize) / height;
+                        height = maxSize;
+                    }
+                }
+                
+                // Set canvas size
+                canvas.width = width;
+                canvas.height = height;
+                
+                // Draw and compress image
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                canvas.toBlob(function(compressedBlob) {
+                    debugLog('Image compressed', {
+                        newWidth: width,
+                        newHeight: height,
+                        originalSize: file.size,
+                        compressedSize: compressedBlob.size
+                    });
+                    
+                    uploadImage(compressedBlob, side);
+                }, 'image/jpeg', 0.8);
+            };
+            
+            img.onerror = function() {
+                debugLog('Image loading failed');
+                hideLoading();
+                showError('Failed to process image. Please try a different image.');
+            };
+            
+            img.src = URL.createObjectURL(file);
+        }
+
+        function uploadImage(imageBlob, side = 'front') {
+            debugLog(`Uploading ${side} image`, {
+                size: imageBlob.size,
+                type: imageBlob.type
+            });
+            
             const formData = new FormData();
             
             if (side === 'front') {
-                formData.append('image', file);
+                formData.append('image', imageBlob, 'front.jpg');
                 formData.append('processing_mode', processingMode);
             } else {
                 // For back side, send both images
-                formData.append('image', new File([currentFrontData.imageBlob], 'front.jpg'));
-                formData.append('back_image', file);
+                if (!currentFrontData || !currentFrontData.imageBlob) {
+                    debugLog('ERROR: No front data available for back side processing');
+                    showError('Error: Front side data not found. Please restart.');
+                    return;
+                }
+                formData.append('image', currentFrontData.imageBlob, 'front.jpg');
+                formData.append('back_image', imageBlob, 'back.jpg');
                 formData.append('processing_mode', 'double');
             }
-
+            
+            debugLog('Sending request to /api/upload');
+            
             fetch('/api/upload', {
                 method: 'POST',
                 body: formData
             })
             .then(response => {
-                console.log('Response status:', response.status);
+                debugLog('Response received', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    ok: response.ok
+                });
+                
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
+                
                 return response.json();
             })
             .then(data => {
-                console.log('Success:', data);
+                debugLog('Response data received', data);
                 hideLoading();
                 
                 if (data.success) {
@@ -402,8 +554,9 @@
                         // Store front data and image for potential back side processing
                         currentFrontData = {
                             ...data.extracted_data,
-                            imageBlob: file
+                            imageBlob: imageBlob
                         };
+                        debugLog('Front data stored');
                         showDataPreview(data.extracted_data, false);
                     } else {
                         // Back side processed - show combined data
@@ -412,18 +565,24 @@
                         showSuccessMessage('Both sides processed successfully! Data saved to Google Sheets.');
                     }
                 } else {
+                    debugLog('Processing failed', data.message);
                     showError(data.message || 'Processing failed');
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                debugLog('Request failed', {
+                    error: error.message,
+                    stack: error.stack
+                });
                 hideLoading();
                 document.getElementById('backSideIndicator').style.display = 'none';
-                showError('Network error. Please check your connection and try again.');
+                showError(`Processing failed: ${error.message}`);
             });
         }
 
         function showDataPreview(data, isComplete = false) {
+            debugLog('Showing data preview', { data, isComplete });
+            
             const preview = document.getElementById('dataPreview');
             const extractedDataDiv = document.getElementById('extractedData');
             const actionButtons = document.getElementById('actionButtons');
@@ -449,7 +608,7 @@
             
             for (const [key, label] of Object.entries(fields)) {
                 const value = data[key] || '';
-                if (value) {
+                if (value && value.trim() !== '') {
                     html += `
                         <div class="data-field">
                             <span class="field-label">${label}:</span>
@@ -457,6 +616,10 @@
                         </div>
                     `;
                 }
+            }
+            
+            if (html === '') {
+                html = '<div class="data-field"><span class="field-value">No data extracted from the image</span></div>';
             }
             
             extractedDataDiv.innerHTML = html;
@@ -472,11 +635,10 @@
         }
 
         function confirmAndSave() {
-            // Process as single-sided card
+            debugLog('Confirm and save clicked');
             showLoading('Saving to Google Sheets...');
             
             // The data is already sent to webhook during processing
-            // Just show success message
             setTimeout(() => {
                 hideLoading();
                 showSuccessMessage('Business card saved to Google Sheets successfully!');
@@ -485,12 +647,13 @@
         }
 
         function addBackSide() {
-            // Hide action buttons and show back side capture
+            debugLog('Add back side clicked');
             document.getElementById('actionButtons').style.display = 'none';
             document.getElementById('backSideInput').click();
         }
 
         function showLoading(message) {
+            debugLog('Showing loading state', message);
             document.getElementById('loadingState').style.display = 'block';
             document.getElementById('loadingState').querySelector('p').textContent = message;
             document.getElementById('dataPreview').style.display = 'none';
@@ -499,10 +662,12 @@
         }
 
         function hideLoading() {
+            debugLog('Hiding loading state');
             document.getElementById('loadingState').style.display = 'none';
         }
 
         function showSuccessMessage(message) {
+            debugLog('Showing success message', message);
             const resultDiv = document.getElementById('resultMessage');
             resultDiv.textContent = message;
             resultDiv.className = 'result-message success';
@@ -515,6 +680,7 @@
         }
 
         function showError(message) {
+            debugLog('Showing error message', message);
             const resultDiv = document.getElementById('resultMessage');
             resultDiv.textContent = message;
             resultDiv.className = 'result-message error';
@@ -527,14 +693,32 @@
         }
 
         function restart() {
+            debugLog('Restarting application');
+            
             // Reset all states
             currentFrontData = null;
             currentBackData = null;
             processingMode = 'single';
+            
+            // Clear file inputs
+            document.getElementById('cameraInput').value = '';
+            document.getElementById('galleryInput').value = '';
+            document.getElementById('backSideInput').value = '';
             
             // Reset UI
             document.getElementById('cameraSection').style.display = 'block';
             document.getElementById('dataPreview').style.display = 'none';
             document.getElementById('actionButtons').style.display = 'none';
             document.getElementById('resultMessage').style.display = 'none';
-            document.getElementById('backSideIndicator').style.
+            document.getElementById('backSideIndicator').style.display = 'none';
+            document.getElementById('loadingState').style.display = 'none';
+            
+            // Clear debug info
+            document.getElementById('debugInfo').innerHTML = '';
+            document.getElementById('debugInfo').style.display = 'none';
+            
+            debugLog('Application restarted');
+        }
+    </script>
+</body>
+</html>
